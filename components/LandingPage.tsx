@@ -1,6 +1,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Mic, Zap, Coffee, Car, Users, ArrowRight, Sparkles, CheckCircle2, Loader2, Image as ImageIcon, MonitorOff, UserRoundCheck, BrainCircuit, Lightbulb, Compass } from 'lucide-react';
+import { Mic, Zap, Coffee, Car, Users, ArrowRight, Sparkles, CheckCircle2, Loader2, Image as ImageIcon, CreditCard, Coins, ShieldCheck, BatteryCharging, PlugZap, Moon, Target, Lightbulb, BookOpen, Heart, Brain, TrendingUp, HelpCircle, Square, MessageSquare, Gem, Telescope } from 'lucide-react';
 import { generateImage } from '../services/geminiService';
 
 interface LandingPageProps {
@@ -42,9 +42,9 @@ const AIImage: React.FC<{ prompt: string; alt: string; className?: string }> = (
   useEffect(() => {
     let isMounted = true;
     const load = async () => {
-      const cacheKey = `sm_img_v2_${btoa(prompt).slice(0, 20)}`;
+      const cacheKey = `sm_img_v4_${btoa(prompt).slice(0, 20)}`;
       const cached = localStorage.getItem(cacheKey);
-      
+
       if (cached && cached.length > 500) {
         if (isMounted) {
           setSrc(cached);
@@ -60,7 +60,7 @@ const AIImage: React.FC<{ prompt: string; alt: string; className?: string }> = (
         }
 
         const dataUrl = `data:image/png;base64,${base64Data}`;
-        
+
         if (isMounted) {
           try {
               localStorage.setItem(cacheKey, dataUrl);
@@ -73,7 +73,7 @@ const AIImage: React.FC<{ prompt: string; alt: string; className?: string }> = (
                 }
               }
           }
-          
+
           setSrc(dataUrl);
           setError(false);
         }
@@ -94,7 +94,7 @@ const AIImage: React.FC<{ prompt: string; alt: string; className?: string }> = (
       <div className={`flex items-center justify-center bg-slate-900 border border-slate-800 ${className}`}>
         <div className="flex flex-col items-center gap-3 text-cyan-400">
           <Loader2 className="w-8 h-8 animate-spin" />
-          <span className="text-xs font-mono uppercase tracking-widest animate-pulse">Generating AI Visuals...</span>
+          <span className="text-xs font-mono uppercase tracking-widest animate-pulse">Visualizing...</span>
         </div>
       </div>
     );
@@ -114,317 +114,149 @@ const AIImage: React.FC<{ prompt: string; alt: string; className?: string }> = (
   return <img src={src} alt={alt} className={className} />;
 };
 
+const RecorderMockup = () => (
+  <div className="relative w-full max-w-[280px] md:max-w-[320px] mx-auto aspect-[9/18.5] bg-[#0f172a] rounded-[3rem] border-4 border-slate-800 shadow-[0_0_100px_-20px_rgba(6,182,212,0.3)] overflow-visible flex flex-col p-6">
+    <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-purple-500/5 rounded-[2.8rem] pointer-events-none" />
+
+    <div className="absolute -right-8 top-[22%] w-36 p-3 bg-slate-800/40 border border-slate-700/50 rounded-xl shadow-2xl backdrop-blur-md pointer-events-none border-l-cyan-500/50 flex flex-col gap-2">
+       <div className="flex items-center gap-2">
+          <Gem className="w-3.5 h-3.5 text-cyan-400" />
+          <div className="h-1.5 w-full bg-slate-700/50 rounded-full" />
+       </div>
+       <div className="h-1.5 w-2/3 bg-slate-800/50 rounded-full" />
+    </div>
+
+    <div className="relative z-10 flex flex-col h-full">
+      <div className="flex items-center justify-between mb-10 px-1">
+        <div className="flex items-center gap-2">
+          <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_12px_#10b981]" />
+          <span className="text-[10px] font-black text-white/90 uppercase tracking-widest">LIVE</span>
+        </div>
+        <div className="px-2.5 py-0.5 bg-slate-800 rounded-full text-[9px] font-black text-white uppercase tracking-widest border border-slate-700">
+          PRO
+        </div>
+      </div>
+
+      <div className="flex-1 flex flex-col justify-center items-center space-y-12">
+        <div className="w-full h-28 bg-black/40 rounded-2xl border border-cyan-500/10 flex items-center justify-center overflow-hidden">
+           <div className="flex items-center gap-1.5 h-12">
+              {[0.3, 0.6, 0.4, 0.8, 0.5, 0.7, 0.3, 0.9, 0.6, 0.4, 0.7, 0.3, 0.5, 0.4].map((h, i) => (
+                <div
+                  key={i}
+                  className="w-1.5 bg-cyan-400 rounded-full animate-pulse"
+                  style={{ height: `${h * 100}%`, animationDelay: `${i * 100}ms` }}
+                />
+              ))}
+           </div>
+        </div>
+
+        <div className="text-center">
+          <div className="text-[44px] font-mono font-black text-white tracking-tighter leading-none mb-2">04:12</div>
+          <div className="text-[10px] font-black text-cyan-400 uppercase tracking-[0.4em]">LISTENING...</div>
+        </div>
+
+        <div className="flex items-center gap-6">
+          <div className="w-12 h-12 rounded-full bg-slate-800/50 border border-slate-700 flex items-center justify-center opacity-40">
+            <div className="w-4 h-4 bg-slate-600 rounded-sm" />
+          </div>
+          <div className="w-20 h-20 rounded-full bg-[#e11d48] flex items-center justify-center shadow-[0_0_40px_-10px_rgba(225,29,72,0.6)] ring-8 ring-rose-600/10 transition-transform active:scale-90">
+            <Mic className="w-9 h-9 text-white" />
+          </div>
+          <div className="w-12 h-12 rounded-full bg-slate-800/50 border border-slate-700 flex items-center justify-center">
+            <Square className="w-5 h-5 text-rose-500 fill-current" />
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-12 pt-8 border-t border-slate-800/30">
+         <div className="h-2 w-full bg-slate-800/50 rounded-full overflow-hidden">
+            <div className="h-full w-1/3 bg-cyan-600/50 rounded-full" />
+         </div>
+      </div>
+    </div>
+  </div>
+);
+
 // --- Main Component ---
 
 const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
   return (
-    <div className="flex flex-col min-h-screen text-white pb-20 overflow-x-hidden">
-      
+    <div className="flex flex-col min-h-screen text-white pb-20 overflow-x-hidden bg-[#0f172a]">
+
       {/* Hero Section */}
-      <section className="relative min-h-[85vh] flex flex-col items-center justify-start text-center px-6 pt-16 pb-16 overflow-hidden">
-        {/* Background Image with Overlay */}
-        <div className="absolute inset-0 z-0 bg-slate-900">
-          <AIImage 
-            prompt="Cinematic shot of two creative professionals driving in a luxury car on a coastal highway, golden hour, interior view, depth of field, 4k"
-            alt="Two people driving and talking" 
-            className="w-full h-full object-cover opacity-60 object-center"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-900/80 via-slate-900/40 to-slate-950" />
-        </div>
+      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 md:px-12 lg:px-24 py-12 overflow-hidden">
+        <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[500px] h-[500px] bg-cyan-500/5 blur-[150px] rounded-full pointer-events-none" />
 
-        <div className="relative z-10 max-w-5xl mx-auto space-y-6">
-          <div className="animate-fade-in-up">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-sm font-black mb-4 backdrop-blur-md shadow-lg">
-              <CheckCircle2 className="w-4 h-4" />
-              <span>100% Free • No Login Required</span>
-            </div>
+        <div className="relative z-10 max-w-[1400px] w-full grid lg:grid-cols-[1fr_2fr] gap-16 lg:gap-24 items-center">
+
+          <div className="relative flex justify-center lg:justify-start">
+             <FadeInSection delay={200} className="w-full">
+                <RecorderMockup />
+                <div className="mt-10 text-center lg:text-left lg:pl-12">
+                   <p className="text-slate-600 font-bold uppercase tracking-[0.4em] text-[11px] opacity-40">VISUAL UNAVAILABLE</p>
+                </div>
+             </FadeInSection>
           </div>
-          
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight leading-tight animate-fade-in-up delay-100 drop-shadow-2xl">
-            Capture Your <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-white to-purple-300">
-              Best Ideas.
-            </span>
-          </h1>
-          
-          <p className="text-xl md:text-2xl text-cyan-100 font-medium max-w-2xl mx-auto leading-relaxed drop-shadow-lg animate-fade-in-up delay-200 bg-black/20 backdrop-blur-sm p-4 rounded-xl">
-            Don't let your best ideas evaporate on the drive home. 
-            SynergyMind listens to the energy of your conversation and turns it into breakthrough strategy.
-          </p>
 
-          <div className="pt-8 animate-fade-in-up delay-300">
-            <button 
-              onClick={onGetStarted}
-              className="group relative inline-flex items-center gap-4 px-10 py-5 bg-white text-slate-950 rounded-full font-bold text-xl hover:bg-cyan-50 transition-all shadow-[0_0_40px_-10px_rgba(255,255,255,0.4)] hover:shadow-[0_0_60px_-10px_rgba(6,182,212,0.6)] active:scale-95"
-            >
-              Start Recording
-              <div className="w-8 h-8 bg-slate-900 rounded-full flex items-center justify-center group-hover:bg-cyan-600 transition-colors">
-                 <ArrowRight className="w-4 h-4 text-white" />
+          <div className="text-left space-y-12 flex flex-col items-start lg:pr-12">
+            <FadeInSection>
+              <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-cyan-950/40 border border-cyan-500/20 text-cyan-300 text-[11px] font-black backdrop-blur-md uppercase tracking-[0.35em] shadow-lg">
+                <Sparkles className="w-4 h-4" />
+                <span>3,000 FREE CREDITS!</span>
               </div>
-            </button>
+            </FadeInSection>
+
+            <div className="space-y-6">
+              <h1 className="text-[60px] md:text-[80px] lg:text-[110px] font-black tracking-tighter leading-[0.82] text-white">
+                Capture Your <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-white to-purple-400">
+                  Great Ideas!
+                </span>
+              </h1>
+              <div className="flex flex-wrap items-center gap-4 pt-2">
+                <h2 className="text-2xl md:text-3xl lg:text-[40px] font-black text-cyan-400 uppercase tracking-[0.15em]">
+                  WITH SYNERGYMIND!
+                </h2>
+                <span className="text-slate-500 text-xl md:text-2xl lg:text-[32px] font-bold uppercase tracking-[0.3em] opacity-80">
+                  IN-PERSON RECORDER
+                </span>
+              </div>
+            </div>
+
+            <p className="text-2xl md:text-3xl lg:text-[38px] text-slate-300 font-medium max-w-4xl leading-[1.2] tracking-tight">
+              Don't let your best ideas evaporate.<br className="hidden md:block" />
+              Capture your thoughts and conversations, and let SynergyMind<br className="hidden md:block" />
+              turn them into clear breakthroughs that empower your future.
+            </p>
+
+            <div className="pt-10 flex flex-col sm:flex-row items-center gap-10 w-full lg:w-auto">
+              <button
+                onClick={onGetStarted}
+                className="group relative inline-flex items-center gap-6 px-14 py-7 bg-[#0891b2] text-white rounded-[2.5rem] font-black text-[28px] hover:bg-cyan-500 transition-all shadow-[0_20px_50px_-15px_rgba(6,182,212,0.5)] active:scale-[0.98] w-full sm:w-auto justify-center"
+              >
+                Start Recording Now
+                <ArrowRight className="w-8 h-8 group-hover:translate-x-2 transition-transform" />
+              </button>
+
+              <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-1.5 opacity-60">
+                 <span className="text-xs font-black text-cyan-400 uppercase tracking-[0.45em]">INSTANT ACCESS</span>
+                 <span className="text-xs font-black text-slate-500 uppercase tracking-[0.45em]">NO CREDIT CARD REQUIRED</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* The Consultant Feature (Difference) - MOVED TO TOP */}
-      <section className="py-24 relative overflow-hidden bg-slate-950 border-y border-slate-900">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-slate-900 z-0" />
-        <div className="max-w-5xl mx-auto px-6 relative z-10 text-center space-y-12">
-          
-          <FadeInSection>
-            <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
-              More than a transcript. <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">
-                A Super-Intelligent Consultant.
-              </span>
-            </h2>
-            <p className="text-xl text-cyan-100 font-medium max-w-2xl mx-auto">
-              Other apps give you minutes. We give you breakthroughs. SynergyMind finds the hidden connections you missed.
-            </p>
-          </FadeInSection>
-
-          <FadeInSection delay={200}>
-            <div className="bg-slate-950/80 border border-slate-700 p-8 rounded-3xl shadow-2xl text-left max-w-3xl mx-auto backdrop-blur-md relative">
-              <div className="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-br from-purple-500 to-cyan-500 rounded-2xl flex items-center justify-center shadow-lg transform -rotate-12 group-hover:rotate-0 transition-transform">
-                 <Sparkles className="w-6 h-6 text-white" />
-              </div>
-              
-              <div className="flex items-center gap-4 mb-6 pt-2">
-                <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700">
-                   <Zap className="w-5 h-5 text-purple-400" />
-                </div>
-                <div>
-                   <div className="text-xs text-purple-300 font-bold uppercase tracking-widest">Synergy Insight detected</div>
-                   <div className="text-white font-bold text-lg uppercase tracking-tight">The Consultant Says:</div>
-                </div>
-              </div>
-              <p className="text-white text-xl leading-relaxed italic border-l-4 border-cyan-500 pl-6 py-2">
-                "You and your brother kept circling the idea of a subscription model, but your tone shifted excitedly when discussing the 'one-time workshop'. <strong className="text-cyan-400 not-italic">Breakthrough:</strong> The market wants a high-ticket intensive, not another monthly fee. Pivot to the workshop model first."
+      {/* Scenario Preview Section */}
+      <section className="py-32 bg-[#020617] border-t border-slate-900/50">
+        <div className="max-w-7xl mx-auto px-6">
+           <FadeInSection className="text-center max-w-4xl mx-auto space-y-8">
+              <h3 className="text-4xl md:text-6xl font-black uppercase tracking-tighter">Turn talk into strategy.</h3>
+              <p className="text-xl md:text-2xl text-slate-400 font-medium leading-relaxed">
+                Whether you're in the car, at the office, or grabbing coffee, SynergyMind captures the nuance and extracts the value from every conversation.
               </p>
-            </div>
-          </FadeInSection>
-
+           </FadeInSection>
         </div>
-      </section>
-
-      {/* Differentiation Section - Refactored to match feature style */}
-      <section className="py-24 bg-slate-950 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            
-             {/* Image Side */}
-            <FadeInSection>
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-700/50 group h-[500px]">
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent z-10 opacity-40" />
-                <AIImage 
-                  prompt="Cinematic portrait of a person with a thoughtful expression, eyes closed slightly, hand to chin, trying to recall a brilliant thought, soft foggy atmosphere in the background, ethereal lighting, high quality, photorealistic"
-                  alt="A person thinking and trying to remember" 
-                  className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
-                />
-                <div className="absolute bottom-8 left-8 z-20">
-                  <div className="flex items-center gap-2 text-white font-bold text-lg bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full">
-                    <Lightbulb className="w-6 h-6 text-yellow-400" />
-                    The Fog of Time
-                  </div>
-                </div>
-              </div>
-            </FadeInSection>
-
-            {/* Text Side */}
-            <FadeInSection delay={200}>
-              <div className="space-y-8">
-                <h2 className="text-3xl md:text-5xl font-bold text-white leading-tight">
-                  Have you ever lost a <br />
-                  <span className="text-rose-500">life-changing idea?</span>
-                </h2>
-                
-                <p className="text-xl text-cyan-100 leading-relaxed font-medium">
-                  Have you ever lost a great, maybe life-changing idea you had in a conversation with someone to the fog of time?
-                </p>
-                
-                <p className="text-lg text-cyan-300 leading-relaxed font-bold">
-                  SynergyMind is your personal conversation recording, great-idea-catching, and breakthrough insight-generating AI solution.
-                </p>
-
-                <div className="bg-slate-900/50 border border-slate-800 p-6 rounded-2xl">
-                   <p className="text-white text-xl font-black italic">
-                    "With SYNERGYMIND You Never Have To Lose Another Great Idea From A Conversation Again!"
-                   </p>
-                </div>
-
-                <div className="pt-4">
-                  <h4 className="text-sm font-black text-rose-500 uppercase tracking-[0.2em] leading-relaxed">
-                    This is not yet another <br />
-                    in-meeting Zoom/Meets <br />
-                    AI note taker app!
-                  </h4>
-                </div>
-              </div>
-            </FadeInSection>
-
-          </div>
-        </div>
-      </section>
-
-      {/* Feature Showcase: Being Present (The Coffee Shop) */}
-      <section className="py-24 bg-slate-950 relative overflow-hidden border-t border-slate-900">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Image Side */}
-            <FadeInSection>
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-700/50 group h-[500px]">
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent z-10 opacity-40" />
-                <AIImage 
-                  prompt="Group of creative coworkers talking enthusiastically around a wooden coffee shop table, coffee mugs, warm afternoon sunlight, soft focus background, photorealistic, cinematic"
-                  alt="Friends talking in a coffee shop" 
-                  className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
-                />
-                <div className="absolute bottom-8 left-8 z-20">
-                  <div className="flex items-center gap-2 text-white font-bold text-lg bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full">
-                    <Coffee className="w-6 h-6 text-purple-400" />
-                    The Coffee Shop Scenario
-                  </div>
-                </div>
-              </div>
-            </FadeInSection>
-
-            {/* Text Side */}
-            <FadeInSection delay={200}>
-              <div className="space-y-8">
-                <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
-                  Be Present. <br />
-                  <span className="text-purple-400">Put the laptop away.</span>
-                </h2>
-                <p className="text-xl text-cyan-100 leading-relaxed font-medium">
-                  Don't be the person hiding behind a screen, typing furiously to capture every word. That kills the vibe.
-                </p>
-                <p className="text-lg text-cyan-300 leading-relaxed">
-                  With SynergyMind, you can look your partner in the eye. Listen to the noise, the laughter, and the passion. We capture the gems, so you can focus on the connection.
-                </p>
-
-                <div className="space-y-4 pt-4">
-                  {[
-                    "No more interrupting flow to take notes",
-                    "Capture tone, emphasis, and energy",
-                    "Walk away with a strategy, not just a memory"
-                  ].map((item, i) => (
-                    <div key={i} className="flex items-center gap-3">
-                      <CheckCircle2 className="w-6 h-6 text-purple-400 flex-shrink-0" />
-                      <span className="text-white font-medium text-lg">{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </FadeInSection>
-          </div>
-        </div>
-      </section>
-
-      {/* Use Case 2: The Drive */}
-      <section className="py-24 bg-slate-900/50 border-y border-slate-800">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            
-            {/* Text Side (Left on Desktop) */}
-            <FadeInSection className="order-2 lg:order-1">
-              <div className="space-y-8">
-                <div className="inline-flex items-center gap-2 text-cyan-400 font-bold uppercase tracking-wider">
-                  <Car className="w-6 h-6" />
-                  Windshield Time
-                </div>
-                <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
-                  The best ideas happen <br />
-                  <span className="text-cyan-400">at 60 MPH.</span>
-                </h2>
-                <p className="text-xl text-cyan-100 leading-relaxed font-medium">
-                  Long drives with a co-founder or friend are legendary for generating ideas. But usually, those ideas evaporate by the time you park.
-                </p>
-                <div className="bg-slate-800/80 p-6 rounded-2xl border border-slate-700 backdrop-blur-sm">
-                  <p className="text-cyan-200 italic text-lg">
-                    "We mapped out our entire business model on the drive to Austin. SynergyMind organized 3 hours of rambling into a 1-page execution plan."
-                  </p>
-                </div>
-              </div>
-            </FadeInSection>
-
-            {/* Image Side */}
-            <FadeInSection delay={200} className="order-1 lg:order-2">
-               <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-700/50 group h-[500px]">
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent z-10 opacity-60" />
-                <AIImage 
-                  prompt="Inside of a modern vehicle driving through a beautiful landscape, sunset lighting hitting the dashboard, cinematic depth of field, high quality"
-                  alt="Driving perspective" 
-                  className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
-                />
-              </div>
-            </FadeInSection>
-
-          </div>
-        </div>
-      </section>
-
-      {/* Use Case 3: Networking */}
-      <section className="py-24 bg-slate-950">
-         <div className="max-w-7xl mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            
-             {/* Image Side */}
-            <FadeInSection>
-               <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-700/50 group h-[500px]">
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent z-10 opacity-60" />
-                <AIImage 
-                  prompt="Close up of two people in business casual attire engaging in a serious but friendly conversation in a modern bright glass building atrium"
-                  alt="Networking meeting" 
-                  className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
-                />
-              </div>
-            </FadeInSection>
-
-             {/* Text Side */}
-            <FadeInSection delay={200}>
-              <div className="space-y-8">
-                <div className="inline-flex items-center gap-2 text-emerald-400 font-bold uppercase tracking-wider">
-                  <Users className="w-6 h-6" />
-                  Instant Follow-up
-                </div>
-                <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
-                  The Networker's <br />
-                  <span className="text-emerald-400">Secret Weapon.</span>
-                </h2>
-                <p className="text-xl text-cyan-100 leading-relaxed font-medium">
-                  You meet someone interesting. You talk for 20 minutes. Don't lose the momentum.
-                </p>
-                <p className="text-lg text-cyan-300 leading-relaxed">
-                  Record the conversation (with permission), and SynergyMind will instantly identify the common ground and draft the perfect follow-up email before you even leave the venue.
-                </p>
-              </div>
-            </FadeInSection>
-
-          </div>
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section className="py-20 px-6 text-center bg-slate-950">
-        <FadeInSection>
-          <div className="max-w-5xl mx-auto bg-gradient-to-b from-slate-900 to-slate-950 p-16 rounded-[3rem] border border-slate-800 shadow-2xl relative overflow-hidden group">
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-purple-500 via-cyan-500 to-emerald-500" />
-            <div className="absolute -bottom-32 -right-32 w-64 h-64 bg-cyan-500/20 rounded-full blur-3xl group-hover:bg-cyan-500/30 transition-all duration-1000" />
-            
-            <h2 className="text-4xl md:text-5xl font-bold mb-8 text-white">Ready to capture the magic?</h2>
-            <p className="text-cyan-100 mb-10 text-xl max-w-2xl mx-auto font-medium">
-              Start 100% Free. No login required. Just tap record and let the synergy begin.
-            </p>
-            
-            <button 
-              onClick={onGetStarted}
-              className="inline-flex items-center gap-3 px-10 py-5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-full font-bold text-xl transition-all shadow-lg shadow-cyan-900/40 hover:scale-105 active:scale-95"
-            >
-              <Mic className="w-6 h-6" />
-              Start Recording Now
-            </button>
-          </div>
-        </FadeInSection>
       </section>
 
     </div>
