@@ -260,8 +260,16 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
              </div>
              <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter">A Pantheon of Perspective</h2>
              <p className="text-xl md:text-2xl text-slate-400 max-w-4xl mx-auto font-medium leading-relaxed">
-                SynergyMind draws from the collective intelligence of history's greatest strategists.
+                Transform your ideas with wisdom from the greatest thinkers in history and our contemporary world. You'll love the new insights and suggestions you will receive when you use SynergyMind!
              </p>
+          </div>
+
+          <div className="mb-16 rounded-[3rem] overflow-hidden border-2 border-slate-800 shadow-2xl mx-auto max-w-5xl">
+            <img
+              src="https://josephsegal.com/wp-content/uploads/2025/12/breakthrough-brain-trust.png"
+              alt="Breakthrough Brain Trust"
+              className="w-full h-auto"
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
