@@ -6,9 +6,6 @@ import { decodeAudioData } from "./audioUtils";
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const ai = GEMINI_API_KEY ? new GoogleGenAI({ apiKey: GEMINI_API_KEY }) : null;
-
 export const analyzeAudioRecording = async (base64Audio: string, mimeType: string): Promise<AnalysisResult> => {
   try {
     const apiUrl = `${SUPABASE_URL}/functions/v1/audio-analysis`;
@@ -45,9 +42,7 @@ export class BrainstormSession {
   constructor(callbacks: any) { this.callbacks = callbacks; }
 
   async connect(analysisContext: AnalysisResult, chatHistory: ChatMessage[], voiceName: VoiceName) {
-    if (!ai) {
-      throw new Error("Gemini API key not configured");
-    }
+    throw new Error("Live audio sessions temporarily disabled for security. Please use the audio analysis feature instead.");
 
     this.inputAudioContext = new AudioContext({ sampleRate: 16000 });
     this.outputAudioContext = new AudioContext({ sampleRate: 24000 });
