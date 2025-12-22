@@ -1,51 +1,35 @@
 
-import { GoogleGenAI, Modality } from "@google/genai";
 import { VoiceName } from "../types";
 import { decodeAudioData } from "./audioUtils";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 export const transcribeUserAudio = async (base64Audio: string, mimeType: string): Promise<string> => {
-  const response = await ai.models.generateContent({
-    model: 'gemini-3-flash-preview',
-    contents: { parts: [{ inlineData: { mimeType, data: base64Audio } }, { text: "Transcribe exactly." }] },
+  const apiUrl = `${SUPABASE_URL}/functions/v1/audio-transcription`;
+
+  const response = await fetch(apiUrl, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ base64Audio, mimeType })
   });
-  return response.text || "";
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Failed to transcribe audio');
+  }
+
+  const result = await response.json();
+  return result.transcription || "";
 };
 
 export const generateImage = async (prompt: string): Promise<string> => {
-  try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash-image',
-      contents: { parts: [{ text: prompt }] },
-    });
-
-    const parts = response.candidates?.[0]?.content?.parts;
-    if (!parts) throw new Error("No parts in response");
-
-    const imagePart = parts.find(p => p.inlineData && p.inlineData.data && p.inlineData.data.length > 100);
-    if (!imagePart || !imagePart.inlineData) {
-      throw new Error("No valid image data found in response parts");
-    }
-
-    return imagePart.inlineData.data;
-  } catch (error) {
-    console.error("Gemini Image Gen Error:", error);
-    throw error;
-  }
+  throw new Error("Image generation is not yet implemented via edge functions");
 };
 
 export const generateVoiceSample = async (voiceName: VoiceName): Promise<AudioBuffer> => {
-  const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash-preview-tts',
-    contents: { parts: [{ text: "Hello. Synergy Mind is ready." }] },
-    config: {
-      responseModalities: [Modality.AUDIO],
-      speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName } } },
-    }
-  });
-  const data = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-  if (!data) throw new Error("No audio");
-  const ctx = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
-  return await decodeAudioData(data, ctx, 24000);
+  throw new Error("Voice sample generation is not yet implemented");
 };
