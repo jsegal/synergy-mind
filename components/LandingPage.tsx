@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Mic, Zap, Coffee, Car, Users, ArrowRight, Sparkles, CheckCircle2, Loader2, Image as ImageIcon, CreditCard, Coins, ShieldCheck, BatteryCharging, PlugZap, Moon, Target, Lightbulb, BookOpen, Heart, Brain, TrendingUp, HelpCircle, Square, MessageSquare, Gem, Telescope } from 'lucide-react';
-import { generateImage } from '../services/geminiService';
+import { Mic, Zap, Coffee, Car, Users, ArrowRight, Sparkles, CheckCircle2, Loader2, Image as ImageIcon, CreditCard, Coins, ShieldCheck, BatteryCharging, PlugZap, Moon, Target, Lightbulb, BookOpen, Heart, Brain, TrendingUp, HelpCircle, Square, MessageSquare, Gem, Telescope, Quote } from 'lucide-react';
+import { generateImage } from '../services/geminiServiceOld';
 
 interface LandingPageProps {
   onGetStarted: () => void;
@@ -177,6 +177,19 @@ const RecorderMockup = () => (
   </div>
 );
 
+const SagesData = [
+  { name: "Marcus Aurelius", title: "Stoic Emperor", desc: "Practical wisdom on leadership, adversity, and self-discipline." },
+  { name: "Benjamin Franklin", title: "Founding Father", desc: "Business acumen, human relationships, and productivity." },
+  { name: "Warren Buffett", title: "Oracle of Omaha", desc: "Strategic decision-making, long-term thinking, and business principles." },
+  { name: "Peter Drucker", title: "Management Legend", desc: "Business strategy, personal effectiveness, and leadership." },
+  { name: "Maya Angelou", title: "Poet & Author", desc: "Resilience, human relationships, and profound personal growth." },
+  { name: "Dale Carnegie", title: "Influence Expert", desc: "Persuasion, communication, and building lasting relationships." },
+  { name: "Viktor Frankl", title: "Psychiatrist", desc: "Finding meaning and maintaining perspective in adversity." },
+  { name: "Brené Brown", title: "Researcher", desc: "Vulnerability, leadership, and courage in relationships." },
+  { name: "Lao Tzu", title: "Ancient Philosopher", desc: "Balance, quiet leadership, and the power of simplicity." },
+  { name: "Jim Rohn", title: "Business Philosopher", desc: "Personal development, goal-setting, and success principles." },
+];
+
 // --- Main Component ---
 
 const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
@@ -247,16 +260,165 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
         </div>
       </section>
 
-      {/* Scenario Preview Section */}
-      <section className="py-32 bg-[#020617] border-t border-slate-900/50">
-        <div className="max-w-7xl mx-auto px-6">
-           <FadeInSection className="text-center max-w-4xl mx-auto space-y-8">
-              <h3 className="text-4xl md:text-6xl font-black uppercase tracking-tighter">Turn talk into strategy.</h3>
-              <p className="text-xl md:text-2xl text-slate-400 font-medium leading-relaxed">
-                Whether you're in the car, at the office, or grabbing coffee, SynergyMind captures the nuance and extracts the value from every conversation.
-              </p>
-           </FadeInSection>
+      {/* Scenarios / Scenarios Section */}
+      <section className="py-32 bg-[#020617] relative overflow-hidden border-t border-slate-900/50">
+        <div className="max-w-7xl mx-auto px-6 space-y-40">
+
+          <div className="text-center space-y-6 max-w-5xl mx-auto">
+             <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter">Your Synergy Scenarios</h2>
+             <p className="text-xl md:text-2xl text-slate-400 font-medium leading-relaxed">
+               Wherever you are, whatever you're doing, SynergyMind is your always-on intellectual companion.
+             </p>
+          </div>
+
+          {/* Scenario 1: Driving */}
+          <FadeInSection className="grid md:grid-cols-2 gap-20 items-center">
+             <div className="space-y-8">
+                <div className="w-16 h-16 bg-cyan-600/20 rounded-3xl flex items-center justify-center border border-cyan-500/30">
+                  <Car className="w-8 h-8 text-cyan-400" />
+                </div>
+                <h3 className="text-5xl font-black leading-none">The Commute <br/><span className="text-cyan-400">Breakthrough</span></h3>
+                <div className="space-y-6">
+                  <p className="text-2xl text-slate-100 font-medium leading-relaxed">
+                    Imagine you're driving to work and that perfect solution finally clicks? Just hit record. SynergyMind filters the road noise and distills your voice into a strategic roadmap before you even park.
+                  </p>
+                </div>
+                <div className="flex items-center gap-4 text-cyan-500 font-black uppercase tracking-widest text-sm">
+                   <Target className="w-5 h-5" /> Goal: Capture Every Great Insight
+                </div>
+             </div>
+             <div className="rounded-[3rem] overflow-hidden border-2 border-slate-800 shadow-2xl group hover:border-cyan-500/30 transition-all bg-slate-900">
+                <AIImage
+                  prompt="Cinematic shot of a person driving a luxury car interior at night, talking into their phone, focused and inspired, high quality"
+                  alt="Recording while driving"
+                  className="w-full aspect-square object-cover opacity-60"
+                />
+             </div>
+          </FadeInSection>
+
+          {/* Scenario 2: Coffee Shop */}
+          <FadeInSection className="grid md:grid-cols-2 gap-20 items-center">
+             <div className="md:order-2 space-y-8">
+                <div className="w-16 h-16 bg-purple-600/20 rounded-3xl flex items-center justify-center border border-purple-500/30">
+                  <Coffee className="w-8 h-8 text-purple-400" />
+                </div>
+                <h3 className="text-5xl font-black leading-none">The Coffee <br/><span className="text-purple-400">Connection</span></h3>
+                <p className="text-2xl text-slate-100 font-medium leading-relaxed">
+                  Brainstorming with a partner in a busy café? Capture the whole talk. SynergyMind identifies key points and creates a clear bridge between your shared growth and individual peace.
+                </p>
+                <div className="flex items-center gap-4 text-purple-500 font-black uppercase tracking-widest text-sm">
+                   <Users className="w-5 h-5" /> Goal: Deep Collaboration
+                </div>
+             </div>
+             <div className="md:order-1 rounded-[3rem] overflow-hidden border-2 border-slate-800 shadow-2xl group hover:border-purple-500/30 transition-all bg-slate-900">
+                <AIImage
+                  prompt="Cinematic shot of two creative entrepreneurs in a high-end modern coffee shop, brainstorming and talking intensely, beautiful warm lighting, bokeh"
+                  alt="Recording a collaboration"
+                  className="w-full aspect-square object-cover opacity-60"
+                />
+             </div>
+          </FadeInSection>
         </div>
+      </section>
+
+      {/* The Wisdom Engine Section */}
+      <section className="py-32 bg-[#0f172a] border-y border-slate-800/50 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="text-center space-y-6 mb-24">
+             <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-purple-500/10 border border-purple-400/30 text-purple-300 text-sm font-black uppercase tracking-widest">
+                <Brain className="w-4 h-4" /> The Wisdom Engine
+             </div>
+             <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter">A Pantheon of Perspective</h2>
+             <p className="text-xl md:text-2xl text-slate-400 max-w-4xl mx-auto font-medium leading-relaxed">
+                SynergyMind draws from the collective intelligence of history's greatest strategists.
+             </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+             {SagesData.map((sage, i) => (
+               <div key={i} className="bg-slate-950 border border-slate-800/50 p-8 rounded-3xl group hover:border-cyan-500/30 transition-all flex flex-col space-y-4">
+                  <div className="text-cyan-400 font-black text-xl leading-tight group-hover:text-white transition-colors">{sage.name}</div>
+                  <div className="text-cyan-500/60 font-black uppercase text-[10px] tracking-widest">{sage.title}</div>
+                  <p className="text-slate-400 text-sm font-medium leading-relaxed pt-2 border-t border-slate-900 group-hover:text-slate-200">{sage.desc}</p>
+               </div>
+             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing / Credits Section */}
+      <section id="pricing" className="py-32 bg-[#020617] relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="text-center space-y-4 mb-20">
+            <h2 className="text-4xl md:text-7xl font-black text-white uppercase tracking-tighter leading-none">Plug-In To Your Potential</h2>
+            <p className="text-xl md:text-2xl text-cyan-400 max-w-2xl mx-auto font-black uppercase tracking-widest">
+              Simple Pricing. Pure Potential.
+            </p>
+          </div>
+
+          <div className="max-w-3xl mx-auto">
+             <div className="relative bg-slate-900/40 border-2 border-cyan-500/30 p-12 rounded-[3.5rem] space-y-12 flex flex-col shadow-2xl backdrop-blur-md">
+                <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-cyan-600 text-white px-10 py-3 rounded-full text-lg font-black uppercase tracking-widest shadow-xl flex items-center gap-3">
+                  <Zap className="w-5 h-5 fill-current" /> 3,000 Credits
+                </div>
+
+                <div className="text-center space-y-4">
+                  <div className="text-7xl font-black text-white">$15.00</div>
+                  <div className="text-cyan-400 font-black uppercase tracking-widest text-sm">Everything Included • No Hidden Fees</div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-x-12 gap-y-6 border-y border-slate-800 py-10">
+                   {[
+                     { label: "Amazing Breakthrough Insights", icon: <Sparkles className="text-cyan-400" /> },
+                     { label: "Voice-Enabled Consultant Chat", icon: <Mic className="text-purple-400" /> },
+                     { label: "Analysis of Key Points & Priorities", icon: <Target className="text-emerald-400" /> },
+                     { label: "Full Strategic Transcripts", icon: <BookOpen className="text-blue-400" /> },
+                     { label: "Library Archive of Past Talks", icon: <BatteryCharging className="text-cyan-400" /> },
+                     { label: "Philosophical Path Guidance", icon: <Brain className="text-indigo-400" /> }
+                   ].map((feat, i) => (
+                     <div key={i} className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-xl bg-slate-950 flex items-center justify-center border border-slate-800 shadow-inner">{feat.icon}</div>
+                        <span className="text-white font-bold text-lg">{feat.label}</span>
+                     </div>
+                   ))}
+                </div>
+
+                <div className="space-y-6">
+                  <button onClick={onGetStarted} className="w-full py-8 bg-cyan-600 hover:bg-cyan-500 text-white rounded-[2rem] font-black text-3xl shadow-2xl transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-4">
+                    <PlugZap className="w-8 h-8" /> Start Your Session
+                  </button>
+                  <div className="text-center flex flex-col items-center gap-2 opacity-60">
+                     <div className="flex items-center justify-center gap-2 text-xs font-black text-slate-100 uppercase tracking-widest">
+                        <ShieldCheck className="w-5 h-5" /> Secured by Stripe • Instant Credit Recharge
+                     </div>
+                  </div>
+                </div>
+             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="py-20 px-6 text-center bg-[#020617]">
+        <FadeInSection>
+          <div className="max-w-5xl mx-auto bg-gradient-to-b from-slate-900 to-[#020617] p-16 rounded-[3rem] border border-slate-800/50 shadow-2xl relative overflow-hidden group">
+            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-purple-500 via-cyan-500 to-emerald-500" />
+
+            <h2 className="text-4xl md:text-5xl font-black mb-8 text-white uppercase tracking-tighter">Your Future Starts with a Recording.</h2>
+            <p className="text-cyan-100 mb-10 text-xl max-w-3xl mx-auto font-medium leading-relaxed">
+              Join the thinkers, the doers, and the dreamers using SynergyMind to map their journey and achieve more.
+            </p>
+
+            <button
+              onClick={onGetStarted}
+              className="inline-flex items-center gap-4 px-12 py-6 bg-cyan-600 hover:bg-cyan-500 text-white rounded-full font-black text-2xl transition-all shadow-lg shadow-cyan-900/40 hover:scale-105 active:scale-95"
+            >
+              <Mic className="w-8 h-8" />
+              Claim Your 3,000 Free Credits
+            </button>
+            <div className="mt-6 text-[10px] font-bold text-cyan-500/60 uppercase tracking-[0.3em]">No Credit Card Required • Instant Access</div>
+          </div>
+        </FadeInSection>
       </section>
 
     </div>
