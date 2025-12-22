@@ -4,8 +4,7 @@ import AudioRecorder from './components/AudioRecorder';
 import AnalysisView from './components/AnalysisView';
 import ChatInterface from './components/ChatInterface';
 import LandingPage from './components/LandingPage';
-import Login from './components/Auth/Login';
-import Signup from './components/Auth/Signup';
+import GoogleSignIn from './components/Auth/GoogleSignIn';
 import { analyzeAudioRecording } from './services/geminiService';
 import { useAuth } from './contexts/AuthContext';
 import { loadConversations, deleteConversation } from './services/supabaseService';
@@ -25,7 +24,7 @@ const PURCHASE_AMOUNT = 3000;
 
 const App: React.FC = () => {
   const { user, loading, signOut } = useAuth();
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+  const [showAuth, setShowAuth] = useState(false);
   const [appState, setAppState] = useState<AppState>(AppState.LANDING);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
@@ -165,12 +164,17 @@ const App: React.FC = () => {
     );
   }
 
-  if (!user) {
-    if (authMode === 'login') {
-      return <Login onToggleMode={() => setAuthMode('signup')} />;
-    }
-    return <Signup onToggleMode={() => setAuthMode('login')} />;
+  if (!user && showAuth) {
+    return <GoogleSignIn />;
   }
+
+  const handleGetStarted = () => {
+    if (!user) {
+      setShowAuth(true);
+    } else {
+      setAppState(AppState.IDLE);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-950 text-white font-sans flex flex-col overflow-hidden">
@@ -247,7 +251,7 @@ const App: React.FC = () => {
       )}
 
       <main className="flex-1 overflow-hidden relative">
-        {appState === AppState.LANDING && <LandingPage onGetStarted={() => setAppState(AppState.IDLE)} />}
+        {appState === AppState.LANDING && <LandingPage onGetStarted={handleGetStarted} />}
         
         {(appState === AppState.IDLE || appState === AppState.PROCESSING) && (
           <div className="flex h-full lg:flex-row flex-col">
