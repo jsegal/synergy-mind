@@ -1,0 +1,22 @@
+{
+  "short_name": "SynergyMind",
+  "name": "SynergyMind AI Consultant",
+  "description": "AI Consultant for recording, transcribing, and brainstorming conversations.",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/12222/12222560.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/12222/12222560.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#0f172a",
+  "background_color": "#0f172a",
+  "orientation": "portrait"
+}

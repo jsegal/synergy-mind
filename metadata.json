@@ -1,0 +1,7 @@
+{
+  "name": "SynergyMind - AI Consultant",
+  "description": "Catch every great new idea and let SynergyMind find your next big breakthrough insight! Record, transcribe, and analyze conversations with AI.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
