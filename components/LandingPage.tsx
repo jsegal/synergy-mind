@@ -219,7 +219,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
              </div>
              <div className="rounded-[3rem] overflow-hidden border-2 border-slate-800 shadow-2xl group hover:border-cyan-500/30 transition-all bg-slate-900">
                 <img
-                  src="https://images.pexels.com/photos/13849/pexels-photo-13849.jpeg?auto=compress&cs=tinysrgb&w=800"
+                  src="https://josephsegal.com/wp-content/uploads/2025/12/the-commute-scenario-image.png"
                   alt="Recording while driving"
                   className="w-full aspect-square object-cover"
                 />
@@ -242,7 +242,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
              </div>
              <div className="md:order-1 rounded-[3rem] overflow-hidden border-2 border-slate-800 shadow-2xl group hover:border-purple-500/30 transition-all bg-slate-900">
                 <img
-                  src="https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=800"
+                  src="https://josephsegal.com/wp-content/uploads/2025/12/coffee-shop-conversation.png"
                   alt="Recording a collaboration"
                   className="w-full aspect-square object-cover"
                 />
