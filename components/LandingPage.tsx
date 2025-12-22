@@ -194,7 +194,7 @@ const SagesData = [
 
 const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
   return (
-    <div className="flex flex-col min-h-screen text-white pb-20 overflow-x-hidden bg-[#0f172a]">
+    <div className="flex flex-col w-full text-white pb-20 overflow-x-hidden bg-[#0f172a]">
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex flex-col items-center justify-center px-6 md:px-12 lg:px-24 py-12 overflow-hidden">
