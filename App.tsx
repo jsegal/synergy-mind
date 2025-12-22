@@ -4,11 +4,15 @@ import AudioRecorder from './components/AudioRecorder';
 import AnalysisView from './components/AnalysisView';
 import ChatInterface from './components/ChatInterface';
 import LandingPage from './components/LandingPage';
+import Login from './components/Auth/Login';
+import Signup from './components/Auth/Signup';
 import { analyzeAudioRecording } from './services/geminiService';
+import { useAuth } from './contexts/AuthContext';
+import { loadConversations, deleteConversation } from './services/supabaseService';
 import { AppState, AnalysisResult, ChatMessage, SavedSession, ActiveSession } from './types';
-import { 
-  History, Trash2, Sparkles, Search, 
-  Clock, MessageSquare, Info, Settings, Plus, Zap, Coins, CreditCard, X
+import {
+  History, Trash2, Sparkles, Search,
+  Clock, MessageSquare, Info, Settings, Plus, Zap, Coins, CreditCard, X, LogOut
 } from 'lucide-react';
 
 const STORAGE_KEY_SESSIONS = 'synergymind_sessions_v3';
@@ -20,6 +24,8 @@ const COST_PER_CONVERSATION = 500;
 const PURCHASE_AMOUNT = 3000;
 
 const App: React.FC = () => {
+  const { user, loading, signOut } = useAuth();
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
   const [appState, setAppState] = useState<AppState>(AppState.LANDING);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
@@ -28,7 +34,7 @@ const App: React.FC = () => {
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [isSaved, setIsSaved] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  
+
   // Credits State
   const [credits, setCredits] = useState<number>(() => {
     const saved = localStorage.getItem(STORAGE_KEY_CREDITS);
@@ -41,27 +47,18 @@ const App: React.FC = () => {
   }, [credits]);
 
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY_SESSIONS);
-    if (saved) {
-      try {
-        setSavedSessions(JSON.parse(saved) || []);
-      } catch (e) { console.error(e); }
+    if (user) {
+      loadConversations(user.id).then(conversations => {
+        const sessions = conversations.map(conv => ({
+          id: conv.id,
+          title: conv.title,
+          analysis: null,
+          date: conv.created_at,
+        }));
+        setSavedSessions(sessions);
+      }).catch(console.error);
     }
-
-    const draft = localStorage.getItem(STORAGE_KEY_ACTIVE);
-    if (draft) {
-      try {
-        const active: ActiveSession = JSON.parse(draft);
-        if (active.analysis) {
-          setAnalysisResult(active.analysis);
-          setChatMessages(active.chatHistory);
-          setAppState(active.state);
-          setCurrentSessionId(active.id);
-          setIsSaved(!!active.id);
-        }
-      } catch (e) { console.error(e); }
-    }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if (appState === AppState.ANALYSIS_COMPLETE || appState === AppState.CHAT_MODE) {
@@ -115,8 +112,8 @@ const App: React.FC = () => {
         </button>
         <div className="relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-500 w-6 h-6" />
-          <input 
-            type="text" 
+          <input
+            type="text"
             placeholder="Search Library..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -134,15 +131,46 @@ const App: React.FC = () => {
           <div className="text-center py-20 text-slate-100 text-lg font-bold uppercase tracking-widest">Empty Archive</div>
         ) : (
           savedSessions.map(session => (
-            <div key={session.id} onClick={() => { setAnalysisResult(session.analysis); setAppState(AppState.ANALYSIS_COMPLETE); setCurrentSessionId(session.id); }} className="p-5 rounded-2xl border border-transparent hover:bg-slate-800 hover:border-slate-700 cursor-pointer transition-all">
-              <h4 className="text-white font-black text-lg truncate">{session.title}</h4>
-              <p className="text-slate-100 text-sm mt-1">{new Date(session.date).toLocaleDateString()}</p>
+            <div key={session.id} className="group relative p-5 rounded-2xl border border-transparent hover:bg-slate-800 hover:border-slate-700 cursor-pointer transition-all">
+              <div onClick={() => { setCurrentSessionId(session.id); }}>
+                <h4 className="text-white font-black text-lg truncate">{session.title}</h4>
+                <p className="text-slate-100 text-sm mt-1">{new Date(session.date).toLocaleDateString()}</p>
+              </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteConversation(session.id).then(() => {
+                    setSavedSessions(prev => prev.filter(s => s.id !== session.id));
+                  });
+                }}
+                className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-2 bg-red-500 hover:bg-red-600 rounded-lg transition-all"
+              >
+                <Trash2 className="w-4 h-4 text-white" />
+              </button>
             </div>
           ))
         )}
       </div>
     </div>
   );
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-white text-xl font-bold">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    if (authMode === 'login') {
+      return <Login onToggleMode={() => setAuthMode('signup')} />;
+    }
+    return <Signup onToggleMode={() => setAuthMode('login')} />;
+  }
 
   return (
     <div className="min-h-screen bg-slate-950 text-white font-sans flex flex-col overflow-hidden">
@@ -201,6 +229,14 @@ const App: React.FC = () => {
                     <Plus className="w-4 h-4" />
                   </div>
               </div>
+
+              <button
+                onClick={() => signOut()}
+                className="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 px-4 py-2 rounded-xl text-white font-bold transition-all"
+              >
+                <LogOut className="w-4 h-4" />
+                Sign Out
+              </button>
 
               <div className="hidden sm:flex items-center gap-4 bg-emerald-500/10 px-5 py-2 rounded-xl border border-emerald-500/20">
                 <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_#10b981]" />
