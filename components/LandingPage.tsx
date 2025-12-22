@@ -218,10 +218,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 </div>
              </div>
              <div className="rounded-[3rem] overflow-hidden border-2 border-slate-800 shadow-2xl group hover:border-cyan-500/30 transition-all bg-slate-900">
-                <AIImage
-                  prompt="Cinematic shot of a person driving a luxury car interior at night, talking into their phone, focused and inspired, high quality"
+                <img
+                  src="https://images.pexels.com/photos/13849/pexels-photo-13849.jpeg?auto=compress&cs=tinysrgb&w=800"
                   alt="Recording while driving"
-                  className="w-full aspect-square object-cover opacity-60"
+                  className="w-full aspect-square object-cover"
                 />
              </div>
           </FadeInSection>
@@ -234,17 +234,17 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 </div>
                 <h3 className="text-5xl font-black leading-none">The Coffee <br/><span className="text-purple-400">Connection</span></h3>
                 <p className="text-2xl text-slate-100 font-medium leading-relaxed">
-                  Brainstorming with a partner in a busy café? Capture the whole talk. SynergyMind identifies key points and creates a clear bridge between your shared growth and individual peace.
+                  Brainstorming with a partner in a busy café? SynergyMind allows you to be 100% present with someone, without having to worry about taking notes or dealing with a laptop. It captures the whole conversation. SynergyMind identifies what's important to each of you and generates a thought provoking breakthrough insight to help you!
                 </p>
                 <div className="flex items-center gap-4 text-purple-500 font-black uppercase tracking-widest text-sm">
                    <Users className="w-5 h-5" /> Goal: Deep Collaboration
                 </div>
              </div>
              <div className="md:order-1 rounded-[3rem] overflow-hidden border-2 border-slate-800 shadow-2xl group hover:border-purple-500/30 transition-all bg-slate-900">
-                <AIImage
-                  prompt="Cinematic shot of two creative entrepreneurs in a high-end modern coffee shop, brainstorming and talking intensely, beautiful warm lighting, bokeh"
+                <img
+                  src="https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=800"
                   alt="Recording a collaboration"
-                  className="w-full aspect-square object-cover opacity-60"
+                  className="w-full aspect-square object-cover"
                 />
              </div>
           </FadeInSection>
