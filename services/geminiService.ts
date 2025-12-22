@@ -1,78 +1,34 @@
 
-import { GoogleGenAI, Type, Modality, LiveServerMessage } from "@google/genai";
+import { GoogleGenAI, Modality } from "@google/genai";
 import { AnalysisResult, ChatMessage, VoiceName } from "../types";
-import { decodeAudioData, float32ToBase64PCM } from "./audioUtils";
+import { decodeAudioData } from "./audioUtils";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-const ANALYSIS_MODEL = 'gemini-3-flash-preview';
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+const ai = GEMINI_API_KEY ? new GoogleGenAI({ apiKey: GEMINI_API_KEY }) : null;
 
 export const analyzeAudioRecording = async (base64Audio: string, mimeType: string): Promise<AnalysisResult> => {
   try {
-    const response = await ai.models.generateContent({
-      model: ANALYSIS_MODEL,
-      contents: {
-        parts: [
-          { inlineData: { mimeType, data: base64Audio } },
-          {
-            text: `
-            Analyze this conversation as SynergyMind, an elite consultant.
-            Generate a JSON report with:
-            1. transcript: full transcription.
-            2. summary: concise value summary.
-            3. Trinity of Insight (insights object):
-               - bigPicture: A wider perspective, future goals, and possible great outcomes.
-               - hiddenOpportunity: How to make the best of the situation using untapped resources or hidden benefits.
-               - wisePath: Philosophical suggestion. Pick the MOST relevant sage from: [Marcus Aurelius, Benjamin Franklin, Warren Buffett, Peter Drucker, Maya Angelou, Dale Carnegie, Viktor Frankl, Brené Brown, Lao Tzu, Jim Rohn].
-            4. keyPoints: speaker name, their point, and emphasis.
-            5. nextSteps: clear roadmap actions.
-            6. participantIntention: the deep why behind the talk.
-            `,
-          },
-        ],
+    const apiUrl = `${SUPABASE_URL}/functions/v1/audio-analysis`;
+
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
       },
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            transcript: { type: Type.STRING },
-            summary: { type: Type.STRING },
-            keyPoints: {
-              type: Type.ARRAY,
-              items: {
-                type: Type.OBJECT,
-                properties: {
-                  speaker: { type: Type.STRING },
-                  point: { type: Type.STRING },
-                  emphasis: { type: Type.STRING }
-                }
-              }
-            },
-            nextSteps: { type: Type.ARRAY, items: { type: Type.STRING } },
-            participantIntention: { type: Type.STRING },
-            insights: {
-              type: Type.OBJECT,
-              properties: {
-                bigPicture: { type: Type.STRING },
-                hiddenOpportunity: { type: Type.STRING },
-                wisePath: {
-                  type: Type.OBJECT,
-                  properties: {
-                    content: { type: Type.STRING },
-                    sageName: { type: Type.STRING }
-                  },
-                  required: ["content", "sageName"]
-                }
-              },
-              required: ["bigPicture", "hiddenOpportunity", "wisePath"]
-            }
-          },
-          required: ["transcript", "summary", "keyPoints", "nextSteps", "participantIntention", "insights"]
-        }
-      }
+      body: JSON.stringify({ base64Audio, mimeType })
     });
 
-    return JSON.parse(response.text) as AnalysisResult;
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to analyze audio');
+    }
+
+    const result = await response.json();
+    return result as AnalysisResult;
   } catch (error) {
     console.error("Error analyzing audio:", error);
     throw error;
@@ -89,10 +45,14 @@ export class BrainstormSession {
   constructor(callbacks: any) { this.callbacks = callbacks; }
 
   async connect(analysisContext: AnalysisResult, chatHistory: ChatMessage[], voiceName: VoiceName) {
+    if (!ai) {
+      throw new Error("Gemini API key not configured");
+    }
+
     this.inputAudioContext = new AudioContext({ sampleRate: 16000 });
     this.outputAudioContext = new AudioContext({ sampleRate: 24000 });
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    
+
     const sessionPromise = ai.live.connect({
       model: 'gemini-2.5-flash-native-audio-preview-09-2025',
       callbacks: {
