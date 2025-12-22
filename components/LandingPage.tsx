@@ -1,7 +1,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { Mic, Zap, Coffee, Car, Users, ArrowRight, Sparkles, CheckCircle2, Loader2, Image as ImageIcon, CreditCard, Coins, ShieldCheck, BatteryCharging, PlugZap, Moon, Target, Lightbulb, BookOpen, Heart, Brain, TrendingUp, HelpCircle, Square, MessageSquare, Gem, Telescope, Quote } from 'lucide-react';
-import { generateImage } from '../services/geminiServiceOld';
 
 interface LandingPageProps {
   onGetStarted: () => void;
@@ -35,83 +34,14 @@ const FadeInSection: React.FC<{ children: React.ReactNode; delay?: number; class
 };
 
 const AIImage: React.FC<{ prompt: string; alt: string; className?: string }> = ({ prompt, alt, className }) => {
-  const [src, setSrc] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    let isMounted = true;
-    const load = async () => {
-      const cacheKey = `sm_img_v4_${btoa(prompt).slice(0, 20)}`;
-      const cached = localStorage.getItem(cacheKey);
-
-      if (cached && cached.length > 500) {
-        if (isMounted) {
-          setSrc(cached);
-          setIsLoading(false);
-        }
-        return;
-      }
-
-      try {
-        const base64Data = await generateImage(prompt);
-        if (!base64Data || base64Data.length < 100) {
-          throw new Error("Invalid image data received");
-        }
-
-        const dataUrl = `data:image/png;base64,${base64Data}`;
-
-        if (isMounted) {
-          try {
-              localStorage.setItem(cacheKey, dataUrl);
-          } catch (e) {
-              console.warn("Storage full or quota exceeded, clearing old images");
-              for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key && key.startsWith('sm_img_')) {
-                  localStorage.removeItem(key);
-                }
-              }
-          }
-
-          setSrc(dataUrl);
-          setError(false);
-        }
-      } catch (e) {
-        console.error("Failed to generate image:", e);
-        if (isMounted) setError(true);
-      } finally {
-        if (isMounted) setIsLoading(false);
-      }
-    };
-
-    load();
-    return () => { isMounted = false; };
-  }, [prompt]);
-
-  if (isLoading) {
-    return (
-      <div className={`flex items-center justify-center bg-slate-900 border border-slate-800 ${className}`}>
-        <div className="flex flex-col items-center gap-3 text-cyan-400">
-          <Loader2 className="w-8 h-8 animate-spin" />
-          <span className="text-xs font-mono uppercase tracking-widest animate-pulse">Visualizing...</span>
-        </div>
+  return (
+    <div className={`flex items-center justify-center bg-slate-800/50 border border-slate-700/30 ${className}`}>
+      <div className="flex flex-col items-center gap-2">
+        <ImageIcon className="w-12 h-12 text-cyan-800 opacity-50" />
+        <span className="text-[10px] text-cyan-700 font-bold uppercase tracking-widest">Visual Unavailable</span>
       </div>
-    );
-  }
-
-  if (error || !src) {
-     return (
-        <div className={`flex items-center justify-center bg-slate-800/50 border border-slate-700/30 ${className}`}>
-             <div className="flex flex-col items-center gap-2">
-                <ImageIcon className="w-12 h-12 text-cyan-800 opacity-50" />
-                <span className="text-[10px] text-cyan-700 font-bold uppercase tracking-widest">Visual Unavailable</span>
-             </div>
-        </div>
-     )
-  }
-
-  return <img src={src} alt={alt} className={className} />;
+    </div>
+  );
 };
 
 const RecorderMockup = () => (
