@@ -177,7 +177,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white font-sans flex flex-col overflow-hidden">
+    <div className={`min-h-screen bg-slate-950 text-white font-sans flex flex-col ${appState === AppState.LANDING ? '' : 'overflow-hidden'}`}>
       
       {/* Purchase Modal */}
       {showPurchaseModal && (
@@ -250,7 +250,7 @@ const App: React.FC = () => {
         </nav>
       )}
 
-      <main className="flex-1 overflow-hidden relative">
+      <main className={`flex-1 relative ${appState === AppState.LANDING ? 'overflow-y-auto' : 'overflow-hidden'}`}>
         {appState === AppState.LANDING && <LandingPage onGetStarted={handleGetStarted} />}
         
         {(appState === AppState.IDLE || appState === AppState.PROCESSING) && (
