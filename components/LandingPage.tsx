@@ -256,7 +256,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="text-center space-y-6 mb-24">
              <p className="text-xl md:text-2xl text-slate-300 mb-8 font-medium leading-relaxed">
-                It's said you become like the 5 people you spend the most time with. Imagine spending your time with these great minds!
+                It's said you become like the 5 people you spend the most time with. <br />
+                Imagine spending your time with these great minds!
              </p>
              <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-purple-500/10 border border-purple-400/30 text-purple-300 text-sm font-black uppercase tracking-widest">
                 <Brain className="w-4 h-4" /> The Wisdom Engine
@@ -268,8 +269,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
           </div>
 
           <div className="text-center mb-8">
-             <p className="text-yellow-500 text-lg md:text-xl font-medium">
-                Marcus Aurelius • Benjamin Franklin • Warren Buffett • Peter Drucker • Maya Angelou • Dale Carnegie • Viktor Frankl • Brené Brown • Lao Tzu • Jim Rohn
+             <p className="text-yellow-500 text-lg md:text-xl font-medium leading-relaxed">
+                Marcus Aurelius • Benjamin Franklin • Warren Buffett • Peter Drucker <br />
+                Maya Angelou • Dale Carnegie • Viktor Frankl <br />
+                Brené Brown • Lao Tzu • Jim Rohn
              </p>
           </div>
 
