@@ -210,7 +210,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 <h3 className="text-5xl font-black leading-none">The Commute <br/><span className="text-cyan-400">Breakthrough</span></h3>
                 <div className="space-y-6">
                   <p className="text-2xl text-slate-100 font-medium leading-relaxed">
-                    Imagine you're driving to work and that perfect solution finally clicks? Just hit record. SynergyMind filters the road noise and distills your voice into a strategic roadmap before you even park.
+                    You're having an incredible conversation while on a long drive. Everyone is coming up with important points and great ideas. The SynergyMind app uses programming from some of the greatest minds from today and from history to take those ideas to another level, delivering brilliant insights and solutions to help you succeed.
                   </p>
                 </div>
                 <div className="flex items-center gap-4 text-cyan-500 font-black uppercase tracking-widest text-sm">
