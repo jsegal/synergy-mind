@@ -166,7 +166,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
               </div>
             </div>
 
-            <p className="text-2xl md:text-3xl lg:text-[38px] text-slate-300 font-medium max-w-4xl leading-[1.2] tracking-tight">
+            <p className="text-lg md:text-xl lg:text-2xl text-slate-300 font-normal max-w-4xl leading-[1.4]">
               Don't let your best ideas evaporate.<br className="hidden md:block" />
               Capture your thoughts and conversations, and let SynergyMind<br className="hidden md:block" />
               turn them into clear breakthroughs that empower your future.
