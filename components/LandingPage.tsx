@@ -160,8 +160,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 <h2 className="text-2xl md:text-3xl lg:text-[40px] font-black text-cyan-400 uppercase tracking-[0.15em]">
                   WITH SYNERGYMIND!
                 </h2>
-                <span className="text-yellow-500 text-xl md:text-2xl lg:text-[32px] font-bold uppercase tracking-[0.3em]">
-                  Your In-Person Recorder App
+                <span className="text-yellow-500 text-lg md:text-xl lg:text-2xl font-normal leading-[1.4]">
+                  Recording Your Great Ideas and Making Them Even Greater! Take Your AI Advisory Team that Represents 1000 Years of Accumulated Wisdom With You To Guide You Wherever You Go.
                 </span>
               </div>
             </div>
