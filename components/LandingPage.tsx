@@ -160,8 +160,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 <h2 className="text-2xl md:text-3xl lg:text-[40px] font-black text-cyan-400 uppercase tracking-[0.15em]">
                   WITH SYNERGYMIND!
                 </h2>
-                <span className="text-slate-500 text-xl md:text-2xl lg:text-[32px] font-bold uppercase tracking-[0.3em] opacity-80">
-                  IN-PERSON RECORDER
+                <span className="text-yellow-500 text-xl md:text-2xl lg:text-[32px] font-bold uppercase tracking-[0.3em]">
+                  Your In-Person Recorder App
                 </span>
               </div>
             </div>
