@@ -264,7 +264,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
              </div>
              <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter">A Pantheon of Perspective</h2>
              <p className="text-xl md:text-2xl text-slate-400 max-w-4xl mx-auto font-medium leading-relaxed">
-                Transform your ideas with wisdom from the greatest thinkers in history and our contemporary world. <br />
+                Transform your ideas with wisdom from the greatest thinkers <br />
+                in history and our contemporary world. <br />
                 You'll love the new insights and suggestions <br />
                 you will receive when you use SynergyMind!
              </p>
