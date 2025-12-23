@@ -299,54 +299,57 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
         </div>
       </section>
 
-      {/* Pricing / Credits Section */}
-      <section id="pricing" className="py-32 bg-[#020617] relative overflow-hidden">
+      {/* FAQ Section */}
+      <section id="faq" className="py-32 bg-[#020617] relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="text-center space-y-4 mb-20">
-            <h2 className="text-4xl md:text-7xl font-black text-white uppercase tracking-tighter leading-none">Plug-In To Your Potential</h2>
-            <p className="text-xl md:text-2xl text-cyan-400 max-w-2xl mx-auto font-black uppercase tracking-widest">
-              Simple Pricing. Pure Potential.
+            <h2 className="text-4xl md:text-7xl font-black text-white uppercase tracking-tighter leading-none">Frequently Asked Questions</h2>
+            <p className="text-xl md:text-2xl text-cyan-400 max-w-2xl mx-auto font-medium">
+              Everything you need to know about SynergyMind
             </p>
           </div>
 
-          <div className="max-w-3xl mx-auto">
-             <div className="relative bg-slate-900/40 border-2 border-cyan-500/30 p-12 rounded-[3.5rem] space-y-12 flex flex-col shadow-2xl backdrop-blur-md">
-                <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-cyan-600 text-white px-10 py-3 rounded-full text-lg font-black uppercase tracking-widest shadow-xl flex items-center gap-3">
-                  <Zap className="w-5 h-5 fill-current" /> 3,000 Credits
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                icon: <Mic className="w-8 h-8 text-cyan-400" />,
+                question: "What gets recorded?",
+                answer: "SynergyMind focuses exclusively on audio. We capture the nuance, tone, and spoken logic of your thoughts or conversations. No video is recorded, keeping the experience lightweight and focused on intelligence."
+              },
+              {
+                icon: <Zap className="w-8 h-8 text-cyan-400" />,
+                question: "How fast are the insights?",
+                answer: "Our Gemini-driven engine delivers your full 'Trinity of Insight' report in under 10 seconds. You receive a verbatim transcript, a value-summary, and a customized execution roadmap immediately after you stop recording."
+              },
+              {
+                icon: <ShieldCheck className="w-8 h-8 text-emerald-400" />,
+                question: "Is my data private?",
+                answer: "Completely. SynergyMind uses zero-knowledge local storage. Your recordings and insights live in your browser's secure vault, not on our servers. Your brilliance stays between you and the AI."
+              },
+              {
+                icon: <Moon className="w-8 h-8 text-blue-400" />,
+                question: "Does it work on mobile?",
+                answer: "Yes. SynergyMind is a high-performance PWA. You can 'Add to Home Screen' on any iPhone or Android device for a full-screen, native-app experience without visiting an app store."
+              },
+              {
+                icon: <Users className="w-8 h-8 text-yellow-400" />,
+                question: "Who benefits most?",
+                answer: "Entrepreneurs mapping out new ventures, creatives brainstorming collaboration, and professionals who want to turn high-stakes meetings into actionable strategy without taking manual notes."
+              },
+              {
+                icon: <Coins className="w-8 h-8 text-rose-400" />,
+                question: "How does pricing work?",
+                answer: "New users start with 3,000 free credits. Each recording session costs 500 credits. Recharges are simple: $15.00 for an additional 3,000 credits. No monthly subscriptions, just pay for the value you use."
+              }
+            ].map((faq, i) => (
+              <div key={i} className="bg-slate-900/40 border border-slate-800/50 p-8 rounded-3xl space-y-6 hover:border-cyan-500/30 transition-all group">
+                <div className="w-16 h-16 bg-slate-950 rounded-2xl flex items-center justify-center border border-slate-800/50 group-hover:border-cyan-500/30 transition-all">
+                  {faq.icon}
                 </div>
-
-                <div className="text-center space-y-4">
-                  <div className="text-7xl font-black text-white">$15.00</div>
-                  <div className="text-cyan-400 font-black uppercase tracking-widest text-sm">Everything Included • No Hidden Fees</div>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-x-12 gap-y-6 border-y border-slate-800 py-10">
-                   {[
-                     { label: "Amazing Breakthrough Insights", icon: <Sparkles className="text-cyan-400" /> },
-                     { label: "Voice-Enabled Consultant Chat", icon: <Mic className="text-purple-400" /> },
-                     { label: "Analysis of Key Points & Priorities", icon: <Target className="text-emerald-400" /> },
-                     { label: "Full Strategic Transcripts", icon: <BookOpen className="text-blue-400" /> },
-                     { label: "Library Archive of Past Talks", icon: <BatteryCharging className="text-cyan-400" /> },
-                     { label: "Philosophical Path Guidance", icon: <Brain className="text-indigo-400" /> }
-                   ].map((feat, i) => (
-                     <div key={i} className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-slate-950 flex items-center justify-center border border-slate-800 shadow-inner">{feat.icon}</div>
-                        <span className="text-white font-bold text-lg">{feat.label}</span>
-                     </div>
-                   ))}
-                </div>
-
-                <div className="space-y-6">
-                  <button onClick={onGetStarted} className="w-full py-8 bg-cyan-600 hover:bg-cyan-500 text-white rounded-[2rem] font-black text-3xl shadow-2xl transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-4">
-                    <PlugZap className="w-8 h-8" /> Start Your Session
-                  </button>
-                  <div className="text-center flex flex-col items-center gap-2 opacity-60">
-                     <div className="flex items-center justify-center gap-2 text-xs font-black text-slate-100 uppercase tracking-widest">
-                        <ShieldCheck className="w-5 h-5" /> Secured by Stripe • Instant Credit Recharge
-                     </div>
-                  </div>
-                </div>
-             </div>
+                <h3 className="text-2xl font-black text-white">{faq.question}</h3>
+                <p className="text-slate-400 font-medium leading-relaxed">{faq.answer}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
