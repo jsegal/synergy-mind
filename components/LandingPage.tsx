@@ -197,7 +197,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
           <div className="text-center space-y-6 max-w-5xl mx-auto">
              <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter">Your Synergy Scenarios</h2>
              <p className="text-xl md:text-2xl text-slate-400 font-medium leading-relaxed">
-               Wherever you are, whatever you're doing, SynergyMind is your always-on intellectual companion.
+               Where were you the last time a truly great idea came to you? Wherever you are, whatever you're doing, SynergyMind is your always-on wise, caring, and intelligent companion.
              </p>
           </div>
 
