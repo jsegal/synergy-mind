@@ -81,7 +81,7 @@ const RecorderMockup = () => (
         </div>
 
         <div className="text-center">
-          <div className="text-[44px] font-mono font-black text-white tracking-tighter leading-none mb-2">04:12</div>
+          <div className="text-[44px] font-mono font-black text-white tracking-tighter leading-none mb-2">04:17</div>
           <div className="text-[10px] font-black text-cyan-400 uppercase tracking-[0.4em]">LISTENING...</div>
         </div>
 
