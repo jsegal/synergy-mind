@@ -4,6 +4,11 @@
   "description": "AI Consultant for recording, transcribing, and brainstorming conversations.",
   "icons": [
     {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    },
+    {
       "src": "/favicon_512x.png",
       "type": "image/png",
       "sizes": "512x512"
