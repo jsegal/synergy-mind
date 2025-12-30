@@ -135,9 +135,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
           <div className="relative flex justify-center lg:justify-start">
              <FadeInSection delay={200} className="w-full">
                 <RecorderMockup />
-                <div className="mt-10 text-center lg:text-left lg:pl-12">
-                   <p className="text-slate-600 font-bold uppercase tracking-[0.4em] text-[11px] opacity-40">VISUAL UNAVAILABLE</p>
-                </div>
              </FadeInSection>
           </div>
 
