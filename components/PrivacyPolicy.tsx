@@ -1,16 +1,15 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 
-interface PrivacyPolicyProps {
-  onBack: () => void;
-}
+const PrivacyPolicy: React.FC = () => {
+  const navigate = useNavigate();
 
-const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onBack }) => {
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       <div className="max-w-4xl mx-auto px-6 py-12">
         <button
-          onClick={onBack}
+          onClick={() => navigate('/')}
           className="flex items-center gap-2 text-cyan-400 hover:text-cyan-300 mb-8 font-bold"
         >
           <ArrowLeft className="w-5 h-5" />

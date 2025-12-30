@@ -1,11 +1,10 @@
 
 import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Mic, Zap, Coffee, Car, Users, ArrowRight, Sparkles, CircleCheck as CheckCircle2, Loader as Loader2, Image as ImageIcon, CreditCard, Coins, ShieldCheck, BatteryCharging, PlugZap, Moon, Target, Lightbulb, BookOpen, Heart, Brain, TrendingUp, Circle as HelpCircle, Square, MessageSquare, Gem, Telescope, Quote } from 'lucide-react';
 
 interface LandingPageProps {
   onGetStarted: () => void;
-  onShowPrivacy: () => void;
-  onShowTerms: () => void;
 }
 
 // --- Helper Components ---
@@ -187,7 +186,9 @@ const InteractiveBrainTrust: React.FC = () => {
 
 // --- Main Component ---
 
-const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onShowPrivacy, onShowTerms }) => {
+const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
+  const navigate = useNavigate();
+
   return (
     <div className="flex flex-col w-full text-white pb-20 overflow-x-hidden bg-[#0f172a]">
 
@@ -463,13 +464,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onShowPrivacy, 
 
             <div className="flex flex-wrap items-center justify-center gap-8 text-sm">
               <button
-                onClick={onShowPrivacy}
+                onClick={() => navigate('/privacy')}
                 className="text-slate-400 hover:text-cyan-400 font-bold transition-colors"
               >
                 Privacy Policy
               </button>
               <button
-                onClick={onShowTerms}
+                onClick={() => navigate('/terms')}
                 className="text-slate-400 hover:text-cyan-400 font-bold transition-colors"
               >
                 Terms of Service

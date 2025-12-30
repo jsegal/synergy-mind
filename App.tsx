@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import AudioRecorder from './components/AudioRecorder';
 import AnalysisView from './components/AnalysisView';
 import ChatInterface from './components/ChatInterface';
@@ -26,9 +27,8 @@ const PURCHASE_AMOUNT = 3000;
 
 const App: React.FC = () => {
   const { user, loading, signOut } = useAuth();
+  const navigate = useNavigate();
   const [showAuth, setShowAuth] = useState(false);
-  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
-  const [showTermsOfService, setShowTermsOfService] = useState(false);
   const [appState, setAppState] = useState<AppState>(AppState.LANDING);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
@@ -178,18 +178,6 @@ const App: React.FC = () => {
     );
   }
 
-  if (!user && showAuth) {
-    return <GoogleSignIn />;
-  }
-
-  if (showPrivacyPolicy) {
-    return <PrivacyPolicy onBack={() => setShowPrivacyPolicy(false)} />;
-  }
-
-  if (showTermsOfService) {
-    return <TermsOfService onBack={() => setShowTermsOfService(false)} />;
-  }
-
   const handleGetStarted = () => {
     if (!user) {
       setShowAuth(true);
@@ -198,7 +186,15 @@ const App: React.FC = () => {
     }
   };
 
+  if (!user && showAuth) {
+    return <GoogleSignIn />;
+  }
+
   return (
+    <Routes>
+      <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="/terms" element={<TermsOfService />} />
+      <Route path="/" element={
     <div className={`min-h-screen bg-slate-950 text-white font-sans flex flex-col ${appState === AppState.LANDING ? 'h-auto' : 'overflow-hidden h-screen'}`}>
       
       {/* Purchase Modal */}
@@ -276,8 +272,6 @@ const App: React.FC = () => {
         {appState === AppState.LANDING && (
           <LandingPage
             onGetStarted={handleGetStarted}
-            onShowPrivacy={() => setShowPrivacyPolicy(true)}
-            onShowTerms={() => setShowTermsOfService(true)}
           />
         )}
         
@@ -337,6 +331,8 @@ const App: React.FC = () => {
         )}
       </main>
     </div>
+      } />
+    </Routes>
   );
 };
 
