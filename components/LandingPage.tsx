@@ -160,13 +160,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 <span className="text-yellow-500 text-lg md:text-xl lg:text-2xl font-normal leading-[1.4]">
                   Recording Your Great Ideas and Making Them Even Greater! Take Your AI Advisory Team that Represents 1000 Years of Accumulated Wisdom With You To Guide You Wherever You Go.
                 </span>
-                <div className="text-red-500 text-[28px] font-black uppercase tracking-wider mt-6">
+                <div className="text-red-500 text-[28px] font-black uppercase tracking-wider mt-2 pt-2 pb-2 border-t-[2px] border-b-[2px] border-cyan-400">
                   YOUR IN-PERSON RECORDER & ADVISOR
                 </div>
               </div>
             </div>
 
-            <p className="text-lg md:text-xl lg:text-2xl text-slate-300 font-normal max-w-4xl leading-[1.4]">
+            <p className="text-lg md:text-xl lg:text-2xl text-slate-300 font-normal max-w-4xl leading-[1.4] mt-2">
               Don't let your best ideas evaporate.<br className="hidden md:block" />
               Capture your thoughts and conversations, and let SynergyMind<br className="hidden md:block" />
               turn them into clear breakthroughs that empower your future.
