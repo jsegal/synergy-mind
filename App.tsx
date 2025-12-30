@@ -46,6 +46,12 @@ const App: React.FC = () => {
   }, [credits]);
 
   useEffect(() => {
+    if (user && appState === AppState.LANDING) {
+      setAppState(AppState.IDLE);
+    }
+  }, [user, appState]);
+
+  useEffect(() => {
     if (user) {
       loadConversations(user.id).then(conversations => {
         const sessions = conversations.map(conv => ({
