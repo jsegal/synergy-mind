@@ -166,13 +166,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
               </div>
             </div>
 
-            <p className="text-lg md:text-xl lg:text-2xl text-slate-300 font-normal max-w-4xl leading-[1.4] mt-1">
+            <p className="text-lg md:text-xl lg:text-2xl text-slate-300 font-normal max-w-4xl leading-[1.4]">
               Don't let your best ideas evaporate.<br className="hidden md:block" />
               Capture your thoughts and conversations, and let SynergyMind<br className="hidden md:block" />
               turn them into clear breakthroughs that empower your future.
             </p>
 
-            <div className="pt-10 flex flex-col sm:flex-row items-center gap-10 w-full lg:w-auto">
+            <div className="pt-3 flex flex-col sm:flex-row items-center gap-10 w-full lg:w-auto">
               <button
                 onClick={onGetStarted}
                 className="group relative inline-flex items-center gap-6 px-14 py-7 bg-[#0891b2] text-white rounded-[2.5rem] font-black text-[28px] hover:bg-cyan-500 transition-all shadow-[0_20px_50px_-15px_rgba(6,182,212,0.5)] active:scale-[0.98] w-full sm:w-auto justify-center"
