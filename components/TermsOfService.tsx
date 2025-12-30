@@ -176,7 +176,7 @@ const TermsOfService: React.FC = () => {
               For questions about these Terms of Service, please contact us at:
             </p>
             <p className="mt-4 text-cyan-400 font-bold">
-              support@synergymind.ai
+              support@synergymind.app
             </p>
           </section>
         </div>

@@ -123,7 +123,7 @@ const PrivacyPolicy: React.FC = () => {
               If you have any questions about this privacy policy or our data practices, please contact us at:
             </p>
             <p className="mt-4 text-cyan-400 font-bold">
-              privacy@synergymind.ai
+              privacy@synergymind.app
             </p>
           </section>
         </div>
