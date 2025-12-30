@@ -361,6 +361,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                </div>
              ))}
           </div>
+
+          <div className="mt-12 text-center">
+             <p className="text-slate-500 text-sm font-medium leading-relaxed max-w-4xl mx-auto">
+                We have made an effort to encapsulate some of the wisdom and styles of approaching problem solving of these great people in this personal recorder and advisor app. They are not in any way associated with or endorsing this app.
+             </p>
+          </div>
         </div>
       </section>
 
