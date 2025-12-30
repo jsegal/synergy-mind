@@ -124,16 +124,16 @@ const InteractiveBrainTrust: React.FC = () => {
   const [hoveredSage, setHoveredSage] = useState<number | null>(null);
 
   const hotspots = [
-    { id: 0, name: "Marcus Aurelius", top: "15%", left: "15%" },
-    { id: 1, name: "Benjamin Franklin", top: "18%", left: "35%" },
-    { id: 2, name: "Warren Buffett", top: "20%", left: "52%" },
-    { id: 3, name: "Peter Drucker", top: "18%", left: "68%" },
-    { id: 4, name: "Maya Angelou", top: "15%", left: "85%" },
-    { id: 5, name: "Dale Carnegie", top: "52%", left: "12%" },
-    { id: 6, name: "Viktor Frankl", top: "55%", left: "32%" },
-    { id: 7, name: "Brené Brown", top: "58%", left: "50%" },
-    { id: 8, name: "Lao Tzu", top: "55%", left: "68%" },
-    { id: 9, name: "Jim Rohn", top: "52%", left: "88%" },
+    { id: 0, name: "Marcus Aurelius", top: "55%", left: "10%" },
+    { id: 1, name: "Benjamin Franklin", top: "60%", left: "30%" },
+    { id: 2, name: "Warren Buffett", top: "58%", left: "48%" },
+    { id: 3, name: "Peter Drucker", top: "62%", left: "62%" },
+    { id: 4, name: "Maya Angelou", top: "60%", left: "80%" },
+    { id: 5, name: "Dale Carnegie", top: "20%", left: "20%" },
+    { id: 6, name: "Viktor Frankl", top: "28%", left: "38%" },
+    { id: 7, name: "Brené Brown", top: "25%", left: "56%" },
+    { id: 8, name: "Lao Tzu", top: "25%", left: "70%" },
+    { id: 9, name: "Jim Rohn", top: "35%", left: "92%" },
   ];
 
   return (
@@ -141,6 +141,14 @@ const InteractiveBrainTrust: React.FC = () => {
       {hotspots.map((spot) => {
         const sage = SagesData[spot.id];
         const isHovered = hoveredSage === spot.id;
+        const leftPercent = parseFloat(spot.left);
+
+        let tooltipPosition = 'left-1/2 -translate-x-1/2';
+        if (leftPercent < 25) {
+          tooltipPosition = 'left-0';
+        } else if (leftPercent > 75) {
+          tooltipPosition = 'right-0';
+        }
 
         return (
           <div
@@ -151,18 +159,20 @@ const InteractiveBrainTrust: React.FC = () => {
             onMouseLeave={() => setHoveredSage(null)}
           >
             <div className="relative">
-              <div className={`w-20 h-20 rounded-full border-4 cursor-pointer transition-all ${
+              <div className={`w-16 h-16 rounded-full border-4 cursor-pointer transition-all ${
                 isHovered
                   ? 'border-cyan-400 bg-cyan-400/20 scale-110 shadow-[0_0_30px_rgba(6,182,212,0.6)]'
                   : 'border-transparent bg-transparent hover:border-cyan-500/50'
               }`} />
 
               {isHovered && (
-                <div className="absolute left-1/2 -translate-x-1/2 top-full mt-4 w-80 bg-slate-900 border-2 border-cyan-400 rounded-2xl p-6 shadow-2xl z-50 pointer-events-none">
-                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-slate-900 border-l-2 border-t-2 border-cyan-400 rotate-45" />
-                  <div className="text-cyan-400 font-black text-2xl mb-2">{sage.name}</div>
-                  <div className="text-cyan-500/60 font-black uppercase text-xs tracking-widest mb-3">{sage.title}</div>
-                  <p className="text-slate-300 text-sm font-medium leading-relaxed">{sage.desc}</p>
+                <div className={`absolute ${tooltipPosition} top-full mt-4 w-72 bg-slate-900 border-2 border-cyan-400 rounded-2xl p-5 shadow-2xl z-50 pointer-events-none`}>
+                  <div className={`absolute -top-2 w-4 h-4 bg-slate-900 border-l-2 border-t-2 border-cyan-400 rotate-45 ${
+                    leftPercent < 25 ? 'left-8' : leftPercent > 75 ? 'right-8' : 'left-1/2 -translate-x-1/2'
+                  }`} />
+                  <div className="text-cyan-400 font-black text-xl mb-2">{sage.name}</div>
+                  <div className="text-cyan-500/60 font-black uppercase text-[10px] tracking-widest mb-3">{sage.title}</div>
+                  <p className="text-slate-300 text-xs font-medium leading-relaxed">{sage.desc}</p>
                 </div>
               )}
             </div>
