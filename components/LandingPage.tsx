@@ -138,7 +138,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
              </FadeInSection>
           </div>
 
-          <div className="text-left space-y-12 flex flex-col items-start lg:pr-12">
+          <div className="text-left space-y-3 flex flex-col items-start lg:pr-12">
             <FadeInSection>
               <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-cyan-950/40 border border-cyan-500/20 text-cyan-300 text-[11px] font-black backdrop-blur-md uppercase tracking-[0.35em] shadow-lg">
                 <Sparkles className="w-4 h-4" />
@@ -146,7 +146,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
               </div>
             </FadeInSection>
 
-            <div className="space-y-6">
+            <div className="space-y-2">
               <h1 className="text-[60px] md:text-[80px] lg:text-[110px] font-black tracking-tighter leading-[0.82] text-white">
                 Capture Your <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-white to-purple-400">
@@ -166,13 +166,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
               </div>
             </div>
 
-            <p className="text-lg md:text-xl lg:text-2xl text-slate-300 font-normal max-w-4xl leading-[1.4] mt-2">
+            <p className="text-lg md:text-xl lg:text-2xl text-slate-300 font-normal max-w-4xl leading-[1.4]">
               Don't let your best ideas evaporate.<br className="hidden md:block" />
               Capture your thoughts and conversations, and let SynergyMind<br className="hidden md:block" />
               turn them into clear breakthroughs that empower your future.
             </p>
 
-            <div className="mt-2 flex flex-col sm:flex-row items-center gap-10 w-full lg:w-auto">
+            <div className="flex flex-col sm:flex-row items-center gap-10 w-full lg:w-auto">
               <button
                 onClick={onGetStarted}
                 className="group relative inline-flex items-center gap-6 px-14 py-7 bg-[#0891b2] text-white rounded-[2.5rem] font-black text-[28px] hover:bg-cyan-500 transition-all shadow-[0_20px_50px_-15px_rgba(6,182,212,0.5)] active:scale-[0.98] w-full sm:w-auto justify-center"
