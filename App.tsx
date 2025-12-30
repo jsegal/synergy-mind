@@ -46,7 +46,11 @@ const App: React.FC = () => {
   }, [credits]);
 
   useEffect(() => {
-    if (user && appState === AppState.LANDING) {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('authenticated') === 'true' && user) {
+      setAppState(AppState.IDLE);
+      window.history.replaceState({}, '', window.location.pathname);
+    } else if (user && appState === AppState.LANDING) {
       setAppState(AppState.IDLE);
     }
   }, [user, appState]);
