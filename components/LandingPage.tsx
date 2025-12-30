@@ -120,6 +120,59 @@ const SagesData = [
   { name: "Jim Rohn", title: "Business Philosopher", desc: "Personal development, goal-setting, and success principles." },
 ];
 
+const InteractiveBrainTrust: React.FC = () => {
+  const [hoveredSage, setHoveredSage] = useState<number | null>(null);
+
+  const hotspots = [
+    { id: 0, name: "Marcus Aurelius", top: "15%", left: "15%" },
+    { id: 1, name: "Benjamin Franklin", top: "18%", left: "35%" },
+    { id: 2, name: "Warren Buffett", top: "20%", left: "52%" },
+    { id: 3, name: "Peter Drucker", top: "18%", left: "68%" },
+    { id: 4, name: "Maya Angelou", top: "15%", left: "85%" },
+    { id: 5, name: "Dale Carnegie", top: "52%", left: "12%" },
+    { id: 6, name: "Viktor Frankl", top: "55%", left: "32%" },
+    { id: 7, name: "Brené Brown", top: "58%", left: "50%" },
+    { id: 8, name: "Lao Tzu", top: "55%", left: "68%" },
+    { id: 9, name: "Jim Rohn", top: "52%", left: "88%" },
+  ];
+
+  return (
+    <div className="absolute inset-0 pointer-events-none">
+      {hotspots.map((spot) => {
+        const sage = SagesData[spot.id];
+        const isHovered = hoveredSage === spot.id;
+
+        return (
+          <div
+            key={spot.id}
+            className="absolute pointer-events-auto"
+            style={{ top: spot.top, left: spot.left, transform: 'translate(-50%, -50%)' }}
+            onMouseEnter={() => setHoveredSage(spot.id)}
+            onMouseLeave={() => setHoveredSage(null)}
+          >
+            <div className="relative">
+              <div className={`w-20 h-20 rounded-full border-4 cursor-pointer transition-all ${
+                isHovered
+                  ? 'border-cyan-400 bg-cyan-400/20 scale-110 shadow-[0_0_30px_rgba(6,182,212,0.6)]'
+                  : 'border-transparent bg-transparent hover:border-cyan-500/50'
+              }`} />
+
+              {isHovered && (
+                <div className="absolute left-1/2 -translate-x-1/2 top-full mt-4 w-80 bg-slate-900 border-2 border-cyan-400 rounded-2xl p-6 shadow-2xl z-50 pointer-events-none">
+                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-slate-900 border-l-2 border-t-2 border-cyan-400 rotate-45" />
+                  <div className="text-cyan-400 font-black text-2xl mb-2">{sage.name}</div>
+                  <div className="text-cyan-500/60 font-black uppercase text-xs tracking-widest mb-3">{sage.title}</div>
+                  <p className="text-slate-300 text-sm font-medium leading-relaxed">{sage.desc}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 // --- Main Component ---
 
 const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
@@ -279,12 +332,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
              </p>
           </div>
 
-          <div className="mb-16 rounded-[3rem] overflow-hidden border-2 border-slate-800 shadow-2xl mx-auto max-w-5xl">
+          <div className="mb-16 rounded-[3rem] overflow-hidden border-2 border-slate-800 shadow-2xl mx-auto max-w-5xl relative group/image">
             <img
               src="https://josephsegal.com/wp-content/uploads/2025/12/breakthrough-brain-trust.png"
               alt="Breakthrough Brain Trust"
               className="w-full h-auto"
             />
+            {/* Interactive Hotspots - positioned over each person */}
+            <InteractiveBrainTrust />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
