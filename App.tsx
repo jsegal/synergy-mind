@@ -4,6 +4,8 @@ import AudioRecorder from './components/AudioRecorder';
 import AnalysisView from './components/AnalysisView';
 import ChatInterface from './components/ChatInterface';
 import LandingPage from './components/LandingPage';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import TermsOfService from './components/TermsOfService';
 import GoogleSignIn from './components/Auth/GoogleSignIn';
 import { analyzeAudioRecording } from './services/geminiService';
 import { useAuth } from './contexts/AuthContext';
@@ -25,6 +27,8 @@ const PURCHASE_AMOUNT = 3000;
 const App: React.FC = () => {
   const { user, loading, signOut } = useAuth();
   const [showAuth, setShowAuth] = useState(false);
+  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
+  const [showTermsOfService, setShowTermsOfService] = useState(false);
   const [appState, setAppState] = useState<AppState>(AppState.LANDING);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
@@ -178,6 +182,14 @@ const App: React.FC = () => {
     return <GoogleSignIn />;
   }
 
+  if (showPrivacyPolicy) {
+    return <PrivacyPolicy onBack={() => setShowPrivacyPolicy(false)} />;
+  }
+
+  if (showTermsOfService) {
+    return <TermsOfService onBack={() => setShowTermsOfService(false)} />;
+  }
+
   const handleGetStarted = () => {
     if (!user) {
       setShowAuth(true);
@@ -261,7 +273,13 @@ const App: React.FC = () => {
       )}
 
       <main className={`flex-1 relative ${appState === AppState.LANDING ? '' : 'overflow-hidden'}`}>
-        {appState === AppState.LANDING && <LandingPage onGetStarted={handleGetStarted} />}
+        {appState === AppState.LANDING && (
+          <LandingPage
+            onGetStarted={handleGetStarted}
+            onShowPrivacy={() => setShowPrivacyPolicy(true)}
+            onShowTerms={() => setShowTermsOfService(true)}
+          />
+        )}
         
         {(appState === AppState.IDLE || appState === AppState.PROCESSING) && (
           <div className="flex h-full lg:flex-row flex-col">

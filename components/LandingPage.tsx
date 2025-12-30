@@ -4,6 +4,8 @@ import { Mic, Zap, Coffee, Car, Users, ArrowRight, Sparkles, CircleCheck as Chec
 
 interface LandingPageProps {
   onGetStarted: () => void;
+  onShowPrivacy: () => void;
+  onShowTerms: () => void;
 }
 
 // --- Helper Components ---
@@ -185,7 +187,7 @@ const InteractiveBrainTrust: React.FC = () => {
 
 // --- Main Component ---
 
-const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
+const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onShowPrivacy, onShowTerms }) => {
   return (
     <div className="flex flex-col w-full text-white pb-20 overflow-x-hidden bg-[#0f172a]">
 
@@ -447,6 +449,39 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
           </div>
         </FadeInSection>
       </section>
+
+      {/* Footer */}
+      <footer className="py-12 px-6 bg-[#020617] border-t border-slate-800/50">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-cyan-600 rounded-xl flex items-center justify-center">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <span className="font-black text-xl tracking-tighter">SynergyMind</span>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-8 text-sm">
+              <button
+                onClick={onShowPrivacy}
+                className="text-slate-400 hover:text-cyan-400 font-bold transition-colors"
+              >
+                Privacy Policy
+              </button>
+              <button
+                onClick={onShowTerms}
+                className="text-slate-400 hover:text-cyan-400 font-bold transition-colors"
+              >
+                Terms of Service
+              </button>
+            </div>
+
+            <div className="text-slate-500 text-sm font-medium">
+              © 2025 SynergyMind. All rights reserved.
+            </div>
+          </div>
+        </div>
+      </footer>
 
     </div>
   );
