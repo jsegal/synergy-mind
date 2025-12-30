@@ -160,6 +160,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 <span className="text-yellow-500 text-lg md:text-xl lg:text-2xl font-normal leading-[1.4]">
                   Recording Your Great Ideas and Making Them Even Greater! Take Your AI Advisory Team that Represents 1000 Years of Accumulated Wisdom With You To Guide You Wherever You Go.
                 </span>
+                <div className="text-red-500 text-[28px] font-black uppercase tracking-wider mt-6">
+                  YOUR IN-PERSON RECORDER & ADVISOR
+                </div>
               </div>
             </div>
 
