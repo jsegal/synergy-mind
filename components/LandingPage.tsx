@@ -1,6 +1,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Mic, Zap, Coffee, Car, Users, ArrowRight, Sparkles, CheckCircle2, Loader2, Image as ImageIcon, CreditCard, Coins, ShieldCheck, BatteryCharging, PlugZap, Moon, Target, Lightbulb, BookOpen, Heart, Brain, TrendingUp, HelpCircle, Square, MessageSquare, Gem, Telescope, Quote } from 'lucide-react';
+import { Mic, Zap, Coffee, Car, Users, ArrowRight, Sparkles, CircleCheck as CheckCircle2, Loader as Loader2, Image as ImageIcon, CreditCard, Coins, ShieldCheck, BatteryCharging, PlugZap, Moon, Target, Lightbulb, BookOpen, Heart, Brain, TrendingUp, Circle as HelpCircle, Square, MessageSquare, Gem, Telescope, Quote } from 'lucide-react';
 
 interface LandingPageProps {
   onGetStarted: () => void;
