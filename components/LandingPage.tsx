@@ -463,18 +463,18 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-8 text-sm">
-              <button
-                onClick={() => navigate('/privacy')}
+              <a
+                href="https://synergymind.app/privacy"
                 className="text-slate-400 hover:text-cyan-400 font-bold transition-colors"
               >
                 Privacy Policy
-              </button>
-              <button
-                onClick={() => navigate('/terms')}
+              </a>
+              <a
+                href="https://synergymind.app/terms"
                 className="text-slate-400 hover:text-cyan-400 font-bold transition-colors"
               >
                 Terms of Service
-              </button>
+              </a>
             </div>
 
             <div className="text-slate-500 text-sm font-medium">
