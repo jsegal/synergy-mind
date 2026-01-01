@@ -20,11 +20,20 @@ export const analyzeAudioRecording = async (base64Audio: string, mimeType: strin
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to analyze audio');
+      const errorData = await response.json().catch(() => ({}));
+      const errorMessage = errorData.error || `Server error: ${response.status} ${response.statusText}`;
+      console.error("API error response:", errorData);
+      throw new Error(errorMessage);
     }
 
     const result = await response.json();
+
+    // Validate that we got the expected structure
+    if (!result.transcript || !result.insights) {
+      console.error("Invalid response structure:", result);
+      throw new Error("Invalid analysis response from server");
+    }
+
     return result as AnalysisResult;
   } catch (error) {
     console.error("Error analyzing audio:", error);

@@ -88,15 +88,17 @@ const App: React.FC = () => {
     setAppState(AppState.PROCESSING);
     try {
       const result = await analyzeAudioRecording(base64Audio, mimeType);
-      
+
       // Successfully analyzed, deduct credits
       setCredits(prev => Math.max(0, prev - COST_PER_CONVERSATION));
-      
+
       setAnalysisResult(result);
       setChatMessages([]);
       setAppState(AppState.ANALYSIS_COMPLETE);
     } catch (err) {
-      setErrorMsg("Strategic analysis failed. Please retry.");
+      console.error("Analysis error:", err);
+      const errorMessage = err instanceof Error ? err.message : "Strategic analysis failed. Please retry.";
+      setErrorMsg(errorMessage);
       setAppState(AppState.ERROR);
     }
   };

@@ -105,6 +105,7 @@ Generate a JSON report with:
 6. participantIntention: the deep why behind the talk.
 `;
 
+    console.log("Calling Gemini API with audio data...");
     const result = await model.generateContent([
       {
         inlineData: {
@@ -115,8 +116,13 @@ Generate a JSON report with:
       { text: prompt }
     ]);
 
+    console.log("Gemini API call successful");
     const response = result.response;
-    const analysisResult = JSON.parse(response.text());
+    const responseText = response.text();
+    console.log("Response text length:", responseText.length);
+
+    const analysisResult = JSON.parse(responseText);
+    console.log("Successfully parsed analysis result");
 
     return new Response(
       JSON.stringify(analysisResult),
@@ -129,8 +135,22 @@ Generate a JSON report with:
     );
   } catch (error) {
     console.error("Error in audio-analysis function:", error);
+
+    let errorMessage = "Internal server error";
+    let errorDetails = "";
+
+    if (error instanceof Error) {
+      errorMessage = error.message;
+      errorDetails = error.stack || "";
+    }
+
+    console.error("Error details:", errorDetails);
+
     return new Response(
-      JSON.stringify({ error: error.message || "Internal server error" }),
+      JSON.stringify({
+        error: errorMessage,
+        details: errorDetails.substring(0, 500)
+      }),
       {
         status: 500,
         headers: {
