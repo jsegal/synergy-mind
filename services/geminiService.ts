@@ -49,9 +49,22 @@ export class BrainstormSession {
   private stream: MediaStream | null = null;
   private workletNode: AudioWorkletNode | null = null;
   private isClosing = false;
+  private reconnectAttempts = 0;
+  private maxReconnectDelay = 30000;
 
   constructor(callbacks: any) {
     this.callbacks = callbacks;
+  }
+
+  getReconnectDelay(): number {
+    const baseDelay = 1000;
+    const delay = Math.min(baseDelay * Math.pow(2, this.reconnectAttempts), this.maxReconnectDelay);
+    this.reconnectAttempts++;
+    return delay;
+  }
+
+  resetReconnectAttempts() {
+    this.reconnectAttempts = 0;
   }
 
   async connect(analysisContext: AnalysisResult, chatHistory: ChatMessage[], voiceName: VoiceName) {
@@ -86,15 +99,16 @@ export class BrainstormSession {
     source.connect(this.workletNode);
     this.workletNode.connect(this.inputAudioContext.destination);
 
-    const wsUrl = `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent?key=${apiKey}`;
+    const wsUrl = `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent?key=${apiKey}`;
     this.ws = new WebSocket(wsUrl);
 
     this.ws.onopen = () => {
       console.log("WebSocket connected");
+      this.resetReconnectAttempts();
 
       const setupMessage = {
         setup: {
-          model: "models/gemini-2.0-flash-exp",
+          model: "models/gemini-2.5-flash-native-audio-preview-12-2025",
           generationConfig: {
             responseModalities: ["AUDIO"],
             speechConfig: {

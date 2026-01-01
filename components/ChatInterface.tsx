@@ -58,7 +58,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
       },
       onUnexpectedDisconnect: () => {
         setIsReconnecting(true);
-        reconnectTimeoutRef.current = window.setTimeout(() => startSession(messagesRef.current), 1500);
+        const delay = sessionRef.current?.getReconnectDelay() || 1000;
+        console.log(`Reconnecting in ${delay}ms...`);
+        reconnectTimeoutRef.current = window.setTimeout(() => startSession(messagesRef.current), delay);
       }
     });
     sessionRef.current = session;
