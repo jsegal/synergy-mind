@@ -22,10 +22,13 @@ export class ElevenLabsConversation {
 
   async connect(): Promise<void> {
     try {
+      const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
       const response = await fetch(`${SUPABASE_URL}/functions/v1/elevenlabs-signed-url`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${anonKey}`,
+          'apikey': anonKey,
         },
         body: JSON.stringify({ agent_id: AGENT_ID }),
       });
