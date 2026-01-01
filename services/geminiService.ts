@@ -51,6 +51,7 @@ export class BrainstormSession {
   private isClosing = false;
   private reconnectAttempts = 0;
   private maxReconnectDelay = 30000;
+  private setupComplete = false;
 
   constructor(callbacks: any) {
     this.callbacks = callbacks;
@@ -105,10 +106,11 @@ export class BrainstormSession {
     this.ws.onopen = () => {
       console.log("WebSocket connected");
       this.resetReconnectAttempts();
+      this.setupComplete = false;
 
       const setupMessage = {
         setup: {
-          model: "models/gemini-2.5-flash-native-audio-preview-12-2025",
+          model: "models/gemini-live-2.5-flash-native-audio",
           generationConfig: {
             responseModalities: ["AUDIO"],
             speechConfig: {
@@ -117,10 +119,6 @@ export class BrainstormSession {
                   voiceName: voiceName
                 }
               }
-            },
-            automaticActivityDetection: {
-              endOfSpeechSensitivity: "HIGH",
-              silenceDurationMs: 1000
             }
           },
           systemInstruction: {
@@ -173,6 +171,7 @@ Engage in a thoughtful voice conversation to help them explore this idea deeply.
 
         if (response.setupComplete) {
           console.log("Setup complete");
+          this.setupComplete = true;
         }
       } catch (error) {
         console.error("Error parsing WebSocket message:", error);
@@ -197,14 +196,14 @@ Engage in a thoughtful voice conversation to help them explore this idea deeply.
 
     this.workletNode.port.onmessage = (event) => {
       if (event.data.type === 'audio') {
-        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+        if (this.ws && this.ws.readyState === WebSocket.OPEN && this.setupComplete) {
           const pcm16Buffer = event.data.data;
           const base64Audio = btoa(String.fromCharCode(...new Uint8Array(pcm16Buffer)));
 
           const audioMessage = {
             realtimeInput: {
               mediaChunks: [{
-                mimeType: "audio/pcm",
+                mimeType: "audio/pcm;rate=16000",
                 data: base64Audio
               }]
             }
