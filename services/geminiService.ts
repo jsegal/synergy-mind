@@ -113,6 +113,7 @@ export class BrainstormSession {
     console.log('[BrainstormSession] Establishing WebSocket connection to Gemini API...');
     const wsUrl = `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent?key=${apiKey}`;
     this.ws = new WebSocket(wsUrl);
+    this.ws.binaryType = 'arraybuffer';
 
     this.ws.onopen = () => {
       console.log('[BrainstormSession] ✅ WebSocket connected successfully');
@@ -152,6 +153,38 @@ Engage in a thoughtful voice conversation to help them explore this idea deeply.
 
     this.ws.onmessage = async (event) => {
       try {
+        if (event.data instanceof ArrayBuffer) {
+          console.log('[BrainstormSession] 🔊 Received raw binary audio data, size:', event.data.byteLength);
+
+          if (this.outputAudioContext) {
+            const pcmData = new Int16Array(event.data);
+            const float32Data = new Float32Array(pcmData.length);
+            for (let i = 0; i < pcmData.length; i++) {
+              float32Data[i] = pcmData[i] / 32768.0;
+            }
+
+            const audioBuffer = this.outputAudioContext.createBuffer(
+              1,
+              float32Data.length,
+              24000
+            );
+            audioBuffer.getChannelData(0).set(float32Data);
+
+            const audioSource = this.outputAudioContext.createBufferSource();
+            audioSource.buffer = audioBuffer;
+            audioSource.connect(this.outputAudioContext.destination);
+            audioSource.start();
+            this.sources.add(audioSource);
+            console.log('[BrainstormSession] Raw PCM audio playback started, duration:', audioBuffer.duration.toFixed(2), 'seconds');
+          }
+          return;
+        }
+
+        if (typeof event.data !== 'string') {
+          console.log('[BrainstormSession] ⚠️ Received non-string, non-ArrayBuffer data:', typeof event.data);
+          return;
+        }
+
         const response = JSON.parse(event.data);
         console.log('[BrainstormSession] 📨 WebSocket message received:', Object.keys(response));
 
@@ -161,7 +194,7 @@ Engage in a thoughtful voice conversation to help them explore this idea deeply.
 
           for (const part of parts) {
             if (part.inlineData?.data && this.outputAudioContext) {
-              console.log('[BrainstormSession] 🔊 Received audio data, length:', part.inlineData.data.length);
+              console.log('[BrainstormSession] 🔊 Received base64 audio data, length:', part.inlineData.data.length);
               const base64Audio = part.inlineData.data;
               const buf = await decodeAudioData(base64Audio, this.outputAudioContext, 24000);
               console.log('[BrainstormSession] Audio decoded, duration:', buf.duration.toFixed(2), 'seconds');
@@ -193,7 +226,7 @@ Engage in a thoughtful voice conversation to help them explore this idea deeply.
           this.setupComplete = true;
         }
       } catch (error) {
-        console.error('[BrainstormSession] ❌ Error parsing WebSocket message:', error);
+        console.error('[BrainstormSession] ❌ Error handling WebSocket message:', error);
       }
     };
 
@@ -207,12 +240,19 @@ Engage in a thoughtful voice conversation to help them explore this idea deeply.
       console.log('[BrainstormSession] Close Code:', event.code);
       console.log('[BrainstormSession] Close Reason:', event.reason);
       console.log('[BrainstormSession] Was Clean:', event.wasClean);
+
+      if (event.code === 1007) {
+        console.error('[BrainstormSession] ❌ Error 1007: Invalid Key - The Gemini Native Audio model requires a paid API key from a Google Cloud project with billing enabled.');
+        console.error('[BrainstormSession] Free API keys from AI Studio will not work with this model.');
+        this.callbacks.onError(new Error("Voice chat requires a paid API key. Please use an API key from a Google Cloud project with billing enabled."));
+      }
+
       this.callbacks.onStatusChange(false);
       if (this.scriptProcessorNode) {
         console.log('[BrainstormSession] Disconnecting ScriptProcessorNode');
         this.scriptProcessorNode.disconnect();
       }
-      if (!this.isClosing && this.callbacks.onUnexpectedDisconnect) {
+      if (!this.isClosing && this.callbacks.onUnexpectedDisconnect && event.code !== 1007) {
         console.log('[BrainstormSession] Unexpected disconnect - triggering reconnect');
         this.callbacks.onUnexpectedDisconnect();
       }
