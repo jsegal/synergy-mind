@@ -58,7 +58,7 @@ export class BrainstormSession {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
     const sessionPromise = ai.live.connect({
-      model: 'gemini-2.5-flash-native-audio-preview-09-2025',
+      model: 'gemini-1.5-pro',
       callbacks: {
         onopen: () => this.callbacks.onStatusChange(true),
         onmessage: async (m) => {
