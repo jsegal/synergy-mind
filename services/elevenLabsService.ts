@@ -1,4 +1,4 @@
-const ELEVENLABS_API_KEY = import.meta.env.VITE_ELEVENLABS_API_KEY;
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const AGENT_ID = 'jODhEqCjkqwE4pq5wOnp';
 
 export interface ElevenLabsConversationConfig {
@@ -21,19 +21,31 @@ export class ElevenLabsConversation {
   }
 
   async connect(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      try {
-        const signedUrl = `wss://api.elevenlabs.io/v1/convai/conversation?agent_id=${AGENT_ID}`;
+    try {
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/elevenlabs-signed-url`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ agent_id: AGENT_ID }),
+      });
 
-        this.ws = new WebSocket(signedUrl, [
-          `api-key.${ELEVENLABS_API_KEY}`
-        ]);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to get signed URL');
+      }
 
-        this.ws.onopen = () => {
-          console.log('ElevenLabs WebSocket connected');
-          this.config.onConnect?.();
-          resolve();
-        };
+      const { signed_url } = await response.json();
+
+      return new Promise((resolve, reject) => {
+        try {
+          this.ws = new WebSocket(signed_url);
+
+          this.ws.onopen = () => {
+            console.log('ElevenLabs WebSocket connected');
+            this.config.onConnect?.();
+            resolve();
+          };
 
         this.ws.onmessage = async (event) => {
           try {
@@ -65,10 +77,14 @@ export class ElevenLabsConversation {
           this.config.onDisconnect?.();
           this.cleanup();
         };
-      } catch (error) {
-        reject(error);
-      }
-    });
+        } catch (error) {
+          reject(error);
+        }
+      });
+    } catch (error) {
+      this.config.onError?.('Failed to connect: ' + (error instanceof Error ? error.message : 'Unknown error'));
+      throw error;
+    }
   }
 
   async sendAudio(audioData: ArrayBuffer): Promise<void> {
