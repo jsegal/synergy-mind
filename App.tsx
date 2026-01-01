@@ -10,7 +10,7 @@ import TermsOfService from './components/TermsOfService';
 import GoogleSignIn from './components/Auth/GoogleSignIn';
 import { analyzeAudioRecording } from './services/geminiService';
 import { useAuth } from './contexts/AuthContext';
-import { loadConversations, deleteConversation } from './services/supabaseService';
+import { loadConversations, deleteConversation, saveConversation } from './services/supabaseService';
 import { AppState, AnalysisResult, ChatMessage, SavedSession, ActiveSession } from './types';
 import {
   History, Trash2, Sparkles, Search,
@@ -117,6 +117,31 @@ const App: React.FC = () => {
     setAnalysisResult(null);
     setCurrentSessionId(null);
     setIsSaved(false);
+  };
+
+  const handleSaveSession = async () => {
+    if (!user || !analysisResult || isSaved) return;
+
+    try {
+      const title = analysisResult.summary.substring(0, 100);
+      const context = JSON.stringify(analysisResult);
+
+      const conversationId = await saveConversation(user.id, title, context);
+
+      setCurrentSessionId(conversationId);
+      setIsSaved(true);
+
+      const updatedSessions = [{
+        id: conversationId,
+        title,
+        analysis: null,
+        date: new Date().toISOString(),
+      }, ...savedSessions];
+      setSavedSessions(updatedSessions);
+    } catch (error) {
+      console.error('Error saving session:', error);
+      alert('Failed to save session. Please try again.');
+    }
   };
 
   const Sidebar = () => (
@@ -315,7 +340,7 @@ const App: React.FC = () => {
         {appState === AppState.ANALYSIS_COMPLETE && analysisResult && (
            <div className="flex h-full">
              <aside className="hidden lg:block w-96 shrink-0"><Sidebar /></aside>
-             <div className="flex-1 overflow-y-auto p-12 bg-slate-950"><AnalysisView data={analysisResult} onStartChat={() => setAppState(AppState.CHAT_MODE)} onSave={() => {}} isSaved={isSaved} /></div>
+             <div className="flex-1 overflow-y-auto p-12 bg-slate-950"><AnalysisView data={analysisResult} onStartChat={() => setAppState(AppState.CHAT_MODE)} onSave={handleSaveSession} isSaved={isSaved} /></div>
            </div>
         )}
 
