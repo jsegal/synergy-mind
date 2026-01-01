@@ -87,13 +87,17 @@ export class BrainstormSession {
         setup: {
           model: "models/gemini-2.0-flash-exp",
           generationConfig: {
-            responseModalities: "audio",
+            responseModalities: ["AUDIO"],
             speechConfig: {
               voiceConfig: {
                 prebuiltVoiceConfig: {
                   voiceName: voiceName
                 }
               }
+            },
+            automaticActivityDetection: {
+              endOfSpeechSensitivity: "HIGH",
+              silenceDurationMs: 1000
             }
           },
           systemInstruction: {
