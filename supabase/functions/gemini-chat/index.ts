@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from "npm:@google/genai@1.30.0";
+import { GoogleGenerativeAI } from "npm:@google/generative-ai@0.21.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -31,7 +31,7 @@ Deno.serve(async (req: Request) => {
     const { messages, context }: ChatRequest = await req.json();
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
     // Build conversation history
     let conversationHistory = [];
