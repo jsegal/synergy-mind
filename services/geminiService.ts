@@ -47,21 +47,40 @@ export class BrainstormSession {
   private session: any = null;
   private callbacks: any;
   private sources = new Set<AudioBufferSourceNode>();
+  private ai: any;
 
-  constructor(callbacks: any) { this.callbacks = callbacks; }
+  constructor(callbacks: any) {
+    this.callbacks = callbacks;
+    this.ai = (window as any).ai;
+  }
 
   async connect(analysisContext: AnalysisResult, chatHistory: ChatMessage[], voiceName: VoiceName) {
-    throw new Error("Live audio sessions temporarily disabled for security. Please use the audio analysis feature instead.");
+    if (!this.ai?.live) {
+      throw new Error("Chrome's built-in AI with Multimodal Live API is not available. Please use Chrome Canary with the experimental AI features enabled.");
+    }
 
     this.inputAudioContext = new AudioContext({ sampleRate: 16000 });
     this.outputAudioContext = new AudioContext({ sampleRate: 24000 });
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-    const sessionPromise = ai.live.connect({
+    const source = this.inputAudioContext.createMediaStreamSource(stream);
+    const analyser = this.inputAudioContext.createAnalyser();
+    analyser.fftSize = 2048;
+    source.connect(analyser);
+
+    if (this.callbacks.onAudioVisualizerData) {
+      this.callbacks.onAudioVisualizerData(analyser);
+    }
+
+    const processor = this.inputAudioContext.createScriptProcessor(4096, 1, 1);
+    source.connect(processor);
+    processor.connect(this.inputAudioContext.destination);
+
+    const sessionPromise = this.ai.live.connect({
       model: 'gemini-1.5-pro',
       callbacks: {
         onopen: () => this.callbacks.onStatusChange(true),
-        onmessage: async (m) => {
+        onmessage: async (m: any) => {
           const base64 = m.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data;
           if (base64 && this.outputAudioContext) {
             const buf = await decodeAudioData(base64, this.outputAudioContext, 24000);
@@ -71,20 +90,50 @@ export class BrainstormSession {
             source.start();
             this.sources.add(source);
           }
+          const text = m.serverContent?.modelTurn?.parts?.find((p: any) => p.text)?.text;
+          if (text) {
+            this.callbacks.onMessage({
+              id: Date.now().toString(),
+              role: 'assistant',
+              text
+            });
+          }
           if (m.serverContent?.turnComplete) {
-            this.callbacks.onMessage({ id: Date.now().toString(), role: 'model', text: "Response received." });
+            console.log("Turn complete");
           }
         },
-        onclose: () => this.callbacks.onStatusChange(false),
-        onerror: (e) => this.callbacks.onError(e)
+        onclose: () => {
+          this.callbacks.onStatusChange(false);
+          processor.disconnect();
+        },
+        onerror: (e: any) => {
+          console.error("Session error:", e);
+          this.callbacks.onError(e);
+        }
       },
       config: {
         responseModalities: [Modality.AUDIO],
         speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName } } },
-        systemInstruction: `Discuss: ${analysisContext.insights.bigPicture}.`
+        systemInstruction: `You are SynergyMind, an elite strategic consultant. The user has shared this breakthrough insight: "${analysisContext.insights.bigPicture}".
+
+Key opportunity identified: ${analysisContext.insights.hiddenOpportunity}
+
+Engage in a thoughtful voice conversation to help them explore this idea deeply. Ask clarifying questions, provide strategic insights, and help them develop an action plan.`
       }
     });
+
     this.session = await sessionPromise;
+
+    processor.onaudioprocess = (e) => {
+      if (this.session) {
+        const inputData = e.inputBuffer.getChannelData(0);
+        const pcm16 = new Int16Array(inputData.length);
+        for (let i = 0; i < inputData.length; i++) {
+          pcm16[i] = Math.max(-32768, Math.min(32767, inputData[i] * 32768));
+        }
+        this.session.send({ realtimeInput: { audioData: pcm16.buffer } });
+      }
+    };
   }
 
   async disconnect() {
