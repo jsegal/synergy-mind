@@ -125,9 +125,6 @@ export class BrainstormSession {
           model: "models/gemini-2.5-flash-native-audio-preview-12-2025",
           generationConfig: {
             responseModalities: ["AUDIO"],
-            responseAudio: {
-              mimeType: "audio/pcm;rate=24000"
-            },
             speechConfig: {
               voiceConfig: {
                 prebuiltVoiceConfig: {
