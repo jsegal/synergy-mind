@@ -123,18 +123,18 @@ export class BrainstormSession {
       console.log('[BrainstormSession] Sending setup message with voice:', voiceName);
       const setupMessage = {
         setup: {
-          model: "models/gemini-2.5-flash-native-audio-preview-12-2025",
-          generation_config: {
-            response_modalities: ["AUDIO"],
-            speech_config: {
-              voice_config: {
-                prebuilt_voice_config: {
-                  voice_name: voiceName
+          model: "models/gemini-2.0-flash-exp",
+          generationConfig: {
+            responseModalities: ["AUDIO"],
+            speechConfig: {
+              voiceConfig: {
+                prebuiltVoiceConfig: {
+                  voiceName: voiceName
                 }
               }
             }
           },
-          system_instruction: {
+          systemInstruction: {
             parts: [{
               text: `You are SynergyMind, an elite strategic consultant. The user has shared this breakthrough insight: "${analysisContext.insights.bigPicture}".
 
