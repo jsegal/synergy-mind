@@ -352,13 +352,15 @@ const App: React.FC = () => {
         )}
 
         {appState === AppState.CHAT_MODE && analysisResult && (
-          <ChatInterface
-            analysisContext={analysisResult}
-            onBack={() => setAppState(AppState.ANALYSIS_COMPLETE)}
-            onNewSession={resetApp}
-            initialMessages={chatMessages}
-            onMessagesUpdate={setChatMessages}
-          />
+          <div className="h-full flex items-center justify-center p-4">
+            <ChatInterface
+              analysisContext={analysisResult}
+              onBack={() => setAppState(AppState.ANALYSIS_COMPLETE)}
+              onNewSession={resetApp}
+              initialMessages={chatMessages}
+              onMessagesUpdate={setChatMessages}
+            />
+          </div>
         )}
 
         {appState === AppState.ERROR && (

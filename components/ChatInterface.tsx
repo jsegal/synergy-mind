@@ -102,8 +102,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
   }, []);
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)] max-w-5xl mx-auto bg-slate-900 rounded-2xl border border-slate-700 shadow-2xl overflow-hidden relative">
-      <div className="flex items-center justify-between p-4 bg-slate-800 border-b border-slate-700 z-10 shadow-sm">
+    <div className="flex flex-col h-full w-full max-w-5xl mx-auto bg-slate-900 rounded-2xl border border-slate-700 shadow-2xl overflow-hidden relative">
+      <div className="flex items-center justify-between p-4 bg-slate-800 border-b border-slate-700 z-10 shadow-sm flex-shrink-0">
         <div className="flex items-center gap-3">
           <button onClick={handleEndAndReturn} className="text-white hover:text-rose-400 font-bold transition-all px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl flex items-center gap-2 border border-slate-600">
             <LogOut className="w-4 h-4" /><span>End & Return</span>
@@ -137,7 +137,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
         <div className="hidden md:block w-32"></div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-6 space-y-8 bg-slate-950 relative scroll-smooth">
+      <div className="flex-1 overflow-y-auto p-6 space-y-8 bg-slate-950 relative scroll-smooth min-h-0">
         {messages.length === 0 && !isActive && !isReconnecting && (
           <div className="absolute inset-0 flex flex-col items-center justify-center text-cyan-500 p-8 text-center pointer-events-none">
             <div className="w-24 h-24 bg-slate-900 rounded-full flex items-center justify-center mb-6 border border-slate-800">
@@ -168,7 +168,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
         </div>
       )}
 
-      <div className="p-6 bg-slate-900 border-t border-slate-700 flex flex-col items-center gap-6">
+      <div className="p-6 bg-slate-900 border-t border-slate-700 flex flex-col items-center gap-6 flex-shrink-0">
         {!isActive && !isReconnecting && (
           <div className="flex items-center gap-6 bg-slate-800 p-3 rounded-2xl border border-slate-700 shadow-lg">
             <div className="flex items-center gap-3 px-4 text-cyan-300 text-xs font-black uppercase tracking-widest border-r border-slate-600">
