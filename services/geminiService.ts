@@ -47,8 +47,9 @@ export class BrainstormSession {
   private callbacks: any;
   private sources = new Set<AudioBufferSourceNode>();
   private stream: MediaStream | null = null;
-  private processor: ScriptProcessorNode | null = null;
+  private workletNode: AudioWorkletNode | null = null;
   private isClosing = false;
+  private silenceDetectionTimeout: number | null = null;
 
   constructor(callbacks: any) {
     this.callbacks = callbacks;
@@ -62,7 +63,16 @@ export class BrainstormSession {
 
     this.inputAudioContext = new AudioContext({ sampleRate: 16000 });
     this.outputAudioContext = new AudioContext({ sampleRate: 24000 });
-    this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+    await this.inputAudioContext.audioWorklet.addModule('/audio-processor.js');
+
+    this.stream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true
+      }
+    });
 
     const source = this.inputAudioContext.createMediaStreamSource(this.stream);
     const analyser = this.inputAudioContext.createAnalyser();
@@ -73,9 +83,9 @@ export class BrainstormSession {
       this.callbacks.onAudioVisualizerData(analyser);
     }
 
-    this.processor = this.inputAudioContext.createScriptProcessor(4096, 1, 1);
-    source.connect(this.processor);
-    this.processor.connect(this.inputAudioContext.destination);
+    this.workletNode = new AudioWorkletNode(this.inputAudioContext, 'audio-stream-processor');
+    source.connect(this.workletNode);
+    this.workletNode.connect(this.inputAudioContext.destination);
 
     const wsUrl = `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent?key=${apiKey}`;
     this.ws = new WebSocket(wsUrl);
@@ -164,40 +174,50 @@ Engage in a thoughtful voice conversation to help them explore this idea deeply.
     this.ws.onclose = () => {
       console.log("WebSocket closed");
       this.callbacks.onStatusChange(false);
-      if (this.processor) {
-        this.processor.disconnect();
+      if (this.workletNode) {
+        this.workletNode.disconnect();
       }
       if (!this.isClosing && this.callbacks.onUnexpectedDisconnect) {
         this.callbacks.onUnexpectedDisconnect();
       }
     };
 
-    this.processor.onaudioprocess = (e) => {
-      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-        const inputData = e.inputBuffer.getChannelData(0);
-        const pcm16 = new Int16Array(inputData.length);
-        for (let i = 0; i < inputData.length; i++) {
-          pcm16[i] = Math.max(-32768, Math.min(32767, inputData[i] * 32768));
+    this.workletNode.port.onmessage = (event) => {
+      if (event.data.type === 'audio') {
+        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+          const pcm16Buffer = event.data.data;
+          const base64Audio = btoa(String.fromCharCode(...new Uint8Array(pcm16Buffer)));
+
+          const audioMessage = {
+            realtimeInput: {
+              mediaChunks: [{
+                mimeType: "audio/pcm",
+                data: base64Audio
+              }]
+            }
+          };
+
+          this.ws.send(JSON.stringify(audioMessage));
         }
-
-        const base64Audio = btoa(String.fromCharCode(...new Uint8Array(pcm16.buffer)));
-
-        const audioMessage = {
-          realtimeInput: {
-            mediaChunks: [{
-              mimeType: "audio/pcm",
-              data: base64Audio
-            }]
-          }
-        };
-
-        this.ws.send(JSON.stringify(audioMessage));
+      } else if (event.data.type === 'silence_detected') {
+        console.log("Silence detected - sending turn complete");
+        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+          this.ws.send(JSON.stringify({
+            clientContent: {
+              turnComplete: true
+            }
+          }));
+        }
       }
     };
   }
 
   async disconnect() {
     this.isClosing = true;
+
+    if (this.silenceDetectionTimeout) {
+      clearTimeout(this.silenceDetectionTimeout);
+    }
 
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.ws.close();
@@ -211,8 +231,8 @@ Engage in a thoughtful voice conversation to help them explore this idea deeply.
       }
     });
 
-    if (this.processor) {
-      this.processor.disconnect();
+    if (this.workletNode) {
+      this.workletNode.disconnect();
     }
 
     if (this.stream) {
