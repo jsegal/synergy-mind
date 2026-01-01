@@ -47,7 +47,6 @@ Deno.serve(async (req: Request) => {
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash",
       generationConfig: {
-        thinkingMode: "enabled",
         responseMimeType: "application/json",
         responseSchema: {
           type: "object",

@@ -95,7 +95,6 @@ SYNTHESIZED OUTPUT:
       generationConfig: {
         maxOutputTokens: 2048,
         temperature: 0.7,
-        thinkingMode: "enabled",
       },
     });
 
