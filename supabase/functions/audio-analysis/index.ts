@@ -22,7 +22,18 @@ Deno.serve(async (req: Request) => {
   try {
     const apiKey = Deno.env.get("GEMINI_API_KEY");
     if (!apiKey) {
-      throw new Error("GEMINI_API_KEY not configured");
+      return new Response(
+        JSON.stringify({
+          error: "GEMINI_API_KEY not configured. Please add your Gemini API key in Supabase Dashboard > Edge Functions > Secrets"
+        }),
+        {
+          status: 500,
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "application/json",
+          },
+        }
+      );
     }
 
     const { base64Audio, mimeType }: AudioAnalysisRequest = await req.json();
