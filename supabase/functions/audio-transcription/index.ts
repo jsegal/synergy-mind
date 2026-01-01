@@ -59,6 +59,12 @@ Deno.serve(async (req: Request) => {
               ],
             },
           ],
+          generation_config: {
+            thinking_config: {
+              include_thoughts: true,
+              thinking_budget: 8192
+            }
+          }
         }),
       }
     );

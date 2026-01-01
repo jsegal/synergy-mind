@@ -93,6 +93,10 @@ SYNTHESIZED OUTPUT:
     const chat = model.startChat({
       history: conversationHistory,
       generationConfig: {
+        thinking_config: {
+          include_thoughts: true,
+          thinking_budget: 8192
+        },
         maxOutputTokens: 2048,
         temperature: 0.7,
       },
