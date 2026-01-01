@@ -104,7 +104,10 @@ SYNTHESIZED OUTPUT:
 
     const result = await chat.sendMessage(lastMessage.content);
     const response = result.response;
-    const text = response.text();
+
+    const parts = response.candidates?.[0]?.content?.parts || [];
+    const textParts = parts.filter((part: any) => !part.thought && part.text);
+    const text = textParts.map((part: any) => part.text).join('');
 
     return new Response(
       JSON.stringify({ response: text }),

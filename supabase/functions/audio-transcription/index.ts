@@ -61,8 +61,7 @@ Deno.serve(async (req: Request) => {
           ],
           generation_config: {
             thinking_config: {
-              include_thoughts: true,
-              thinking_budget: 8192
+              include_thoughts: false
             }
           }
         }),
@@ -76,7 +75,9 @@ Deno.serve(async (req: Request) => {
     }
 
     const data = await response.json();
-    const transcription = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    const parts = data.candidates?.[0]?.content?.parts || [];
+    const textParts = parts.filter((part: any) => !part.thought && part.text);
+    const transcription = textParts.map((part: any) => part.text).join('') || "";
 
     return new Response(
       JSON.stringify({ transcription }),

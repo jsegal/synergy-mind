@@ -149,10 +149,15 @@ Generate a JSON report with:
 
     console.log("Gemini API call successful");
     const response = result.response;
-    const responseText = response.text();
+
+    const parts = response.candidates?.[0]?.content?.parts || [];
+    const textParts = parts.filter((part: any) => !part.thought && part.text);
+    const responseText = textParts.map((part: any) => part.text).join('');
+
     console.log("Response text length:", responseText.length);
 
-    const analysisResult = JSON.parse(responseText);
+    const cleanedText = responseText.replace(/^[^{]*|[^}]*$/g, "");
+    const analysisResult = JSON.parse(cleanedText);
     console.log("Successfully parsed analysis result");
 
     return new Response(
