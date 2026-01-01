@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import AudioRecorder from './components/AudioRecorder';
+import VoiceChat from './components/VoiceChat';
 import AnalysisView from './components/AnalysisView';
 import ChatInterface from './components/ChatInterface';
 import LandingPage from './components/LandingPage';
@@ -79,28 +79,8 @@ const App: React.FC = () => {
     }
   }, [appState, analysisResult, chatMessages, currentSessionId]);
 
-  const handleRecordingComplete = async (base64Audio: string, mimeType: string) => {
-    if (credits < COST_PER_CONVERSATION) {
-      setShowPurchaseModal(true);
-      return;
-    }
-
-    setAppState(AppState.PROCESSING);
-    try {
-      const result = await analyzeAudioRecording(base64Audio, mimeType);
-
-      // Successfully analyzed, deduct credits
-      setCredits(prev => Math.max(0, prev - COST_PER_CONVERSATION));
-
-      setAnalysisResult(result);
-      setChatMessages([]);
-      setAppState(AppState.ANALYSIS_COMPLETE);
-    } catch (err) {
-      console.error("Analysis error:", err);
-      const errorMessage = err instanceof Error ? err.message : "Strategic analysis failed. Please retry.";
-      setErrorMsg(errorMessage);
-      setAppState(AppState.ERROR);
-    }
+  const handleCreditDeduction = (amount: number) => {
+    setCredits(prev => Math.max(0, prev - amount));
   };
 
   const handlePurchase = () => {
@@ -315,22 +295,21 @@ const App: React.FC = () => {
             <div className="flex-1 flex flex-col items-center justify-center p-10 overflow-y-auto">
                <div className="max-w-3xl w-full space-y-16">
                   <div className="text-center space-y-6">
-                    <h1 className="text-7xl font-black tracking-tighter leading-none">Capture Magic.</h1>
-                    <p className="text-2xl text-slate-100 font-medium">Your super-intelligent strategist is listening.</p>
+                    <h1 className="text-7xl font-black tracking-tighter leading-none">Voice Intelligence.</h1>
+                    <p className="text-2xl text-slate-100 font-medium">Real-time conversation with your AI business consultant.</p>
                   </div>
                   <div className="bg-slate-900/50 p-16 rounded-[4rem] border border-slate-800 shadow-2xl backdrop-blur-sm">
-                    <AudioRecorder 
-                      onRecordingComplete={handleRecordingComplete} 
-                      isProcessing={appState === AppState.PROCESSING} 
+                    <VoiceChat
                       credits={credits}
                       onInsufficientCredits={() => setShowPurchaseModal(true)}
+                      onCreditDeduction={handleCreditDeduction}
                     />
                   </div>
                   <div className="grid md:grid-cols-3 gap-8">
                      {[
-                       { icon: <MessageSquare />, label: "Transcript", desc: "Verbatim record." },
-                       { icon: <Zap className="text-cyan-400" />, label: "Breakthrough Insights!", desc: "New connections." },
-                       { icon: <Plus />, label: "Roadmap", desc: "Clear actions." }
+                       { icon: <MessageSquare />, label: "Real-Time", desc: "Live voice chat." },
+                       { icon: <Zap className="text-cyan-400" />, label: "Instant Insights!", desc: "Quick responses." },
+                       { icon: <Plus />, label: "Natural Flow", desc: "Just talk." }
                      ].map((item, i) => (
                        <div key={i} className="bg-slate-900 border border-slate-800 p-8 rounded-3xl text-center space-y-3">
                           <div className="mx-auto w-10 h-10 flex items-center justify-center text-cyan-400">{item.icon}</div>
