@@ -1,5 +1,4 @@
 
-import { GoogleGenAI, Modality } from "@google/genai";
 import { AnalysisResult, ChatMessage, VoiceName } from "../types";
 import { decodeAudioData } from "./audioUtils";
 
@@ -44,26 +43,28 @@ export const analyzeAudioRecording = async (base64Audio: string, mimeType: strin
 export class BrainstormSession {
   private inputAudioContext: AudioContext | null = null;
   private outputAudioContext: AudioContext | null = null;
-  private session: any = null;
+  private ws: WebSocket | null = null;
   private callbacks: any;
   private sources = new Set<AudioBufferSourceNode>();
-  private ai: any;
+  private stream: MediaStream | null = null;
+  private processor: ScriptProcessorNode | null = null;
+  private isClosing = false;
 
   constructor(callbacks: any) {
     this.callbacks = callbacks;
-    this.ai = (window as any).ai;
   }
 
   async connect(analysisContext: AnalysisResult, chatHistory: ChatMessage[], voiceName: VoiceName) {
-    if (!this.ai?.live) {
-      throw new Error("Chrome's built-in AI with Multimodal Live API is not available. Please use Chrome Canary with the experimental AI features enabled.");
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    if (!apiKey) {
+      throw new Error("VITE_GEMINI_API_KEY not configured. Please add your Gemini API key.");
     }
 
     this.inputAudioContext = new AudioContext({ sampleRate: 16000 });
     this.outputAudioContext = new AudioContext({ sampleRate: 24000 });
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-    const source = this.inputAudioContext.createMediaStreamSource(stream);
+    const source = this.inputAudioContext.createMediaStreamSource(this.stream);
     const analyser = this.inputAudioContext.createAnalyser();
     analyser.fftSize = 2048;
     source.connect(analyser);
@@ -72,73 +73,148 @@ export class BrainstormSession {
       this.callbacks.onAudioVisualizerData(analyser);
     }
 
-    const processor = this.inputAudioContext.createScriptProcessor(4096, 1, 1);
-    source.connect(processor);
-    processor.connect(this.inputAudioContext.destination);
+    this.processor = this.inputAudioContext.createScriptProcessor(4096, 1, 1);
+    source.connect(this.processor);
+    this.processor.connect(this.inputAudioContext.destination);
 
-    const sessionPromise = this.ai.live.connect({
-      model: 'gemini-1.5-pro',
-      callbacks: {
-        onopen: () => this.callbacks.onStatusChange(true),
-        onmessage: async (m: any) => {
-          const base64 = m.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data;
-          if (base64 && this.outputAudioContext) {
-            const buf = await decodeAudioData(base64, this.outputAudioContext, 24000);
-            const source = this.outputAudioContext.createBufferSource();
-            source.buffer = buf;
-            source.connect(this.outputAudioContext.destination);
-            source.start();
-            this.sources.add(source);
-          }
-          const text = m.serverContent?.modelTurn?.parts?.find((p: any) => p.text)?.text;
-          if (text) {
-            this.callbacks.onMessage({
-              id: Date.now().toString(),
-              role: 'assistant',
-              text
-            });
-          }
-          if (m.serverContent?.turnComplete) {
-            console.log("Turn complete");
-          }
-        },
-        onclose: () => {
-          this.callbacks.onStatusChange(false);
-          processor.disconnect();
-        },
-        onerror: (e: any) => {
-          console.error("Session error:", e);
-          this.callbacks.onError(e);
-        }
-      },
-      config: {
-        responseModalities: [Modality.AUDIO],
-        speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName } } },
-        systemInstruction: `You are SynergyMind, an elite strategic consultant. The user has shared this breakthrough insight: "${analysisContext.insights.bigPicture}".
+    const wsUrl = `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent?key=${apiKey}`;
+    this.ws = new WebSocket(wsUrl);
+
+    this.ws.onopen = () => {
+      console.log("WebSocket connected");
+
+      const setupMessage = {
+        setup: {
+          model: "models/gemini-2.0-flash-exp",
+          generationConfig: {
+            responseModalities: "audio",
+            speechConfig: {
+              voiceConfig: {
+                prebuiltVoiceConfig: {
+                  voiceName: voiceName
+                }
+              }
+            }
+          },
+          systemInstruction: {
+            parts: [{
+              text: `You are SynergyMind, an elite strategic consultant. The user has shared this breakthrough insight: "${analysisContext.insights.bigPicture}".
 
 Key opportunity identified: ${analysisContext.insights.hiddenOpportunity}
 
 Engage in a thoughtful voice conversation to help them explore this idea deeply. Ask clarifying questions, provide strategic insights, and help them develop an action plan.`
+            }]
+          }
+        }
+      };
+
+      this.ws?.send(JSON.stringify(setupMessage));
+      this.callbacks.onStatusChange(true);
+    };
+
+    this.ws.onmessage = async (event) => {
+      try {
+        const response = JSON.parse(event.data);
+
+        if (response.serverContent) {
+          const parts = response.serverContent.modelTurn?.parts || [];
+
+          for (const part of parts) {
+            if (part.inlineData?.data && this.outputAudioContext) {
+              const base64Audio = part.inlineData.data;
+              const buf = await decodeAudioData(base64Audio, this.outputAudioContext, 24000);
+              const audioSource = this.outputAudioContext.createBufferSource();
+              audioSource.buffer = buf;
+              audioSource.connect(this.outputAudioContext.destination);
+              audioSource.start();
+              this.sources.add(audioSource);
+            }
+
+            if (part.text) {
+              this.callbacks.onMessage({
+                id: Date.now().toString(),
+                role: 'assistant',
+                text: part.text
+              });
+            }
+          }
+
+          if (response.serverContent.turnComplete) {
+            console.log("Turn complete");
+          }
+        }
+
+        if (response.setupComplete) {
+          console.log("Setup complete");
+        }
+      } catch (error) {
+        console.error("Error parsing WebSocket message:", error);
       }
-    });
+    };
 
-    this.session = await sessionPromise;
+    this.ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+      this.callbacks.onError(new Error("Connection error occurred"));
+    };
 
-    processor.onaudioprocess = (e) => {
-      if (this.session) {
+    this.ws.onclose = () => {
+      console.log("WebSocket closed");
+      this.callbacks.onStatusChange(false);
+      if (this.processor) {
+        this.processor.disconnect();
+      }
+      if (!this.isClosing && this.callbacks.onUnexpectedDisconnect) {
+        this.callbacks.onUnexpectedDisconnect();
+      }
+    };
+
+    this.processor.onaudioprocess = (e) => {
+      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
         const inputData = e.inputBuffer.getChannelData(0);
         const pcm16 = new Int16Array(inputData.length);
         for (let i = 0; i < inputData.length; i++) {
           pcm16[i] = Math.max(-32768, Math.min(32767, inputData[i] * 32768));
         }
-        this.session.send({ realtimeInput: { audioData: pcm16.buffer } });
+
+        const base64Audio = btoa(String.fromCharCode(...new Uint8Array(pcm16.buffer)));
+
+        const audioMessage = {
+          realtimeInput: {
+            mediaChunks: [{
+              mimeType: "audio/pcm",
+              data: base64Audio
+            }]
+          }
+        };
+
+        this.ws.send(JSON.stringify(audioMessage));
       }
     };
   }
 
   async disconnect() {
-    if (this.session) await this.session.close();
-    this.sources.forEach(s => s.stop());
+    this.isClosing = true;
+
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      this.ws.close();
+    }
+
+    this.sources.forEach(s => {
+      try {
+        s.stop();
+      } catch (e) {
+        console.log("Source already stopped");
+      }
+    });
+
+    if (this.processor) {
+      this.processor.disconnect();
+    }
+
+    if (this.stream) {
+      this.stream.getTracks().forEach(track => track.stop());
+    }
+
     await this.inputAudioContext?.close();
     await this.outputAudioContext?.close();
   }
