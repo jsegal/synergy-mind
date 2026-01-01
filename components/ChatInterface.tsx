@@ -27,7 +27,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
   const [selectedVoice, setSelectedVoice] = useState<VoiceName>(() => {
     const saved = localStorage.getItem('synergyMind_voice');
-    return saved === 'Charon' ? 'Charon' : 'Aoede';
+    return saved === 'Kore' ? 'Kore' : 'Zephyr';
   });
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -179,21 +179,21 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
             <div className="flex gap-4 pr-2">
               <button
                 onClick={() => {
-                  setSelectedVoice('Aoede');
-                  localStorage.setItem('synergyMind_voice', 'Aoede');
+                  setSelectedVoice('Zephyr');
+                  localStorage.setItem('synergyMind_voice', 'Zephyr');
                 }}
-                className={`px-5 py-2.5 rounded-xl text-base font-bold transition-all ${selectedVoice === 'Aoede' ? 'bg-cyan-600 text-white shadow-lg' : 'bg-slate-700 text-cyan-100'}`}
+                className={`px-5 py-2.5 rounded-xl text-base font-bold transition-all ${selectedVoice === 'Zephyr' ? 'bg-cyan-600 text-white shadow-lg' : 'bg-slate-700 text-cyan-100'}`}
               >
-                Female
+                Zephyr
               </button>
               <button
                 onClick={() => {
-                  setSelectedVoice('Charon');
-                  localStorage.setItem('synergyMind_voice', 'Charon');
+                  setSelectedVoice('Kore');
+                  localStorage.setItem('synergyMind_voice', 'Kore');
                 }}
-                className={`px-5 py-2.5 rounded-xl text-base font-bold transition-all ${selectedVoice === 'Charon' ? 'bg-cyan-600 text-white shadow-lg' : 'bg-slate-700 text-cyan-100'}`}
+                className={`px-5 py-2.5 rounded-xl text-base font-bold transition-all ${selectedVoice === 'Kore' ? 'bg-cyan-600 text-white shadow-lg' : 'bg-slate-700 text-cyan-100'}`}
               >
-                Male
+                Kore
               </button>
             </div>
           </div>
