@@ -3,11 +3,12 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { ChatMessage, AnalysisResult, VoiceName } from '../types';
 import { BrainstormSession } from '../services/geminiService';
 import { visualizeAudio } from '../services/audioUtils';
-import { Mic, PhoneOff, User, Bot, Radio, WifiOff, Volume2, LogOut } from 'lucide-react';
+import { Mic, PhoneOff, User, Bot, Radio, WifiOff, Volume2, LogOut, Plus } from 'lucide-react';
 
 interface ChatInterfaceProps {
   analysisContext: AnalysisResult;
   onBack: () => void;
+  onNewSession?: () => void;
   initialMessages: ChatMessage[];
   onMessagesUpdate: (messages: ChatMessage[]) => void;
 }
@@ -15,6 +16,7 @@ interface ChatInterfaceProps {
 const ChatInterface: React.FC<ChatInterfaceProps> = ({
   analysisContext,
   onBack,
+  onNewSession,
   initialMessages,
   onMessagesUpdate
 }) => {
@@ -102,9 +104,26 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] max-w-5xl mx-auto bg-slate-900 rounded-2xl border border-slate-700 shadow-2xl overflow-hidden relative">
       <div className="flex items-center justify-between p-4 bg-slate-800 border-b border-slate-700 z-10 shadow-sm">
-        <button onClick={handleEndAndReturn} className="text-white hover:text-rose-400 font-bold transition-all px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl flex items-center gap-2 border border-slate-600">
-          <LogOut className="w-4 h-4" /><span>End & Return</span>
-        </button>
+        <div className="flex items-center gap-3">
+          <button onClick={handleEndAndReturn} className="text-white hover:text-rose-400 font-bold transition-all px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl flex items-center gap-2 border border-slate-600">
+            <LogOut className="w-4 h-4" /><span>End & Return</span>
+          </button>
+          {onNewSession && (
+            <button
+              onClick={async () => {
+                if (reconnectTimeoutRef.current) clearTimeout(reconnectTimeoutRef.current);
+                if (sessionRef.current) {
+                  await sessionRef.current.disconnect();
+                  sessionRef.current = null;
+                }
+                onNewSession();
+              }}
+              className="text-white hover:text-cyan-400 font-bold transition-all px-4 py-2 bg-cyan-600 hover:bg-cyan-500 rounded-xl flex items-center gap-2 border border-cyan-500"
+            >
+              <Plus className="w-4 h-4" /><span>New Session</span>
+            </button>
+          )}
+        </div>
         <div className="flex flex-col items-center">
           <h3 className="text-xl font-bold text-white flex items-center gap-3">
             {isActive && !isReconnecting && <span className="relative flex h-3 w-3"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span></span>}

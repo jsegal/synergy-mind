@@ -115,8 +115,10 @@ const App: React.FC = () => {
     localStorage.removeItem(STORAGE_KEY_ACTIVE);
     setAppState(AppState.IDLE);
     setAnalysisResult(null);
+    setChatMessages([]);
     setCurrentSessionId(null);
     setIsSaved(false);
+    setErrorMsg(null);
   };
 
   const handleSaveSession = async () => {
@@ -280,7 +282,12 @@ const App: React.FC = () => {
               </div>
 
               <button
-                onClick={() => signOut()}
+                onClick={async () => {
+                  await signOut();
+                  resetApp();
+                  setAppState(AppState.LANDING);
+                  navigate('/');
+                }}
                 className="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 px-4 py-2 rounded-xl text-white font-bold transition-all"
               >
                 <LogOut className="w-4 h-4" />
@@ -345,7 +352,13 @@ const App: React.FC = () => {
         )}
 
         {appState === AppState.CHAT_MODE && analysisResult && (
-          <ChatInterface analysisContext={analysisResult} onBack={() => setAppState(AppState.ANALYSIS_COMPLETE)} initialMessages={chatMessages} onMessagesUpdate={setChatMessages} />
+          <ChatInterface
+            analysisContext={analysisResult}
+            onBack={() => setAppState(AppState.ANALYSIS_COMPLETE)}
+            onNewSession={resetApp}
+            initialMessages={chatMessages}
+            onMessagesUpdate={setChatMessages}
+          />
         )}
 
         {appState === AppState.ERROR && (
