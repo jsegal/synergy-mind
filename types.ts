@@ -55,4 +55,4 @@ export interface SpeakerConfig {
   voiceName: string;
 }
 
-export type VoiceName = 'Zephyr' | 'Kore';
+export type VoiceName = 'Puck' | 'Charon' | 'Kore' | 'Fenrir' | 'Aoede';

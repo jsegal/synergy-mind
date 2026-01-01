@@ -26,8 +26,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
   const [error, setError] = useState<string | null>(null);
 
   const [selectedVoice, setSelectedVoice] = useState<VoiceName>(() => {
-    const saved = localStorage.getItem('synergyMind_voice');
-    return saved === 'Kore' ? 'Kore' : 'Zephyr';
+    const saved = localStorage.getItem('synergyMind_voice') as VoiceName;
+    const validVoices: VoiceName[] = ['Puck', 'Charon', 'Kore', 'Fenrir', 'Aoede'];
+    return validVoices.includes(saved) ? saved : 'Puck';
   });
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -176,25 +177,19 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
             <div className="flex items-center gap-3 px-4 text-cyan-300 text-xs font-black uppercase tracking-widest border-r border-slate-600">
               <Volume2 className="w-6 h-6 text-cyan-400" />Voice Selection
             </div>
-            <div className="flex gap-4 pr-2">
-              <button
-                onClick={() => {
-                  setSelectedVoice('Zephyr');
-                  localStorage.setItem('synergyMind_voice', 'Zephyr');
-                }}
-                className={`px-5 py-2.5 rounded-xl text-base font-bold transition-all ${selectedVoice === 'Zephyr' ? 'bg-cyan-600 text-white shadow-lg' : 'bg-slate-700 text-cyan-100'}`}
-              >
-                Zephyr
-              </button>
-              <button
-                onClick={() => {
-                  setSelectedVoice('Kore');
-                  localStorage.setItem('synergyMind_voice', 'Kore');
-                }}
-                className={`px-5 py-2.5 rounded-xl text-base font-bold transition-all ${selectedVoice === 'Kore' ? 'bg-cyan-600 text-white shadow-lg' : 'bg-slate-700 text-cyan-100'}`}
-              >
-                Kore
-              </button>
+            <div className="flex gap-3 pr-2 flex-wrap">
+              {(['Puck', 'Charon', 'Kore', 'Fenrir', 'Aoede'] as VoiceName[]).map((voice) => (
+                <button
+                  key={voice}
+                  onClick={() => {
+                    setSelectedVoice(voice);
+                    localStorage.setItem('synergyMind_voice', voice);
+                  }}
+                  className={`px-4 py-2.5 rounded-xl text-base font-bold transition-all ${selectedVoice === voice ? 'bg-cyan-600 text-white shadow-lg' : 'bg-slate-700 text-cyan-100 hover:bg-slate-600'}`}
+                >
+                  {voice}
+                </button>
+              ))}
             </div>
           </div>
         )}
