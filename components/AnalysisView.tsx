@@ -100,7 +100,7 @@ const AnalysisView: React.FC<AnalysisViewProps> = ({ data, onStartChat, onSave, 
             <Quote className="w-8 h-8 text-purple-400" />
           </div>
           <h3 className="text-2xl font-black text-white uppercase tracking-tight">The Wise Path</h3>
-          <div className="text-purple-300 text-sm font-black uppercase tracking-widest">Guidance from {data.insights.wisePath.sageName}</div>
+          <div className="text-purple-300 text-sm font-black uppercase tracking-widest">Synthesized Wisdom from The Greatest Minds</div>
           <div className="text-slate-100 text-xl italic font-medium leading-relaxed prose prose-invert">
             <ReactMarkdown>{data.insights.wisePath.content}</ReactMarkdown>
           </div>

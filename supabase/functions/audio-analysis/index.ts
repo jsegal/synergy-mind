@@ -47,6 +47,7 @@ Deno.serve(async (req: Request) => {
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash",
       generationConfig: {
+        thinkingMode: "enabled",
         responseMimeType: "application/json",
         responseSchema: {
           type: "object",
@@ -65,9 +66,9 @@ Deno.serve(async (req: Request) => {
                 required: ["speaker", "point", "emphasis"]
               }
             },
-            nextSteps: { 
-              type: "array", 
-              items: { type: "string" } 
+            nextSteps: {
+              type: "array",
+              items: { type: "string" }
             },
             participantIntention: { type: "string" },
             insights: {
@@ -78,10 +79,9 @@ Deno.serve(async (req: Request) => {
                 wisePath: {
                   type: "object",
                   properties: {
-                    content: { type: "string" },
-                    sageName: { type: "string" }
+                    content: { type: "string" }
                   },
-                  required: ["content", "sageName"]
+                  required: ["content"]
                 }
               },
               required: ["bigPicture", "hiddenOpportunity", "wisePath"]
@@ -100,7 +100,34 @@ Generate a JSON report with:
 3. Trinity of Insight (insights object):
    - bigPicture: A wider perspective, future goals, and possible great outcomes.
    - hiddenOpportunity: How to make the best of the situation using untapped resources or hidden benefits.
-   - wisePath: Philosophical suggestion. Pick the MOST relevant sage from: [Marcus Aurelius, Benjamin Franklin, Warren Buffett, Peter Drucker, Maya Angelou, Dale Carnegie, Viktor Frankl, Brené Brown, Lao Tzu, Jim Rohn].
+   - wisePath: Multi-Advisor Synthesis using this framework:
+
+     THINKING PHASE (hidden internal deliberation):
+     - Identify 3-5 advisors from this list whose life philosophies MOST DIRECTLY solve this specific conflict: Marcus Aurelius, Maya Angelou, Warren Buffett, Viktor Frankl, Lao Tzu, Peter Drucker, Brené Brown, Dale Carnegie, Jim Rohn, Benjamin Franklin
+     - Simulate a dialogue where these advisors challenge each other. Example: Have Drucker analyze the 'efficiency' while Angelou questions the 'human cost.'
+
+     ADVISOR PERSONA FIDELITY (use these voices in your thinking):
+     - Marcus Aurelius: Stoic, clinical logic. "The obstacle is the way." Internal self-mastery.
+     - Maya Angelou: Rhythmic, poetic, deeply empathetic. Dignity and the "human spirit."
+     - Warren Buffett: Plain-spoken, long-term "value" logic. Simplicity and "margin of safety."
+     - Viktor Frankl: "Will to meaning." Shift from "what I want" to "what life asks of me."
+     - Lao Tzu: Paradoxical, minimalist, nature-based metaphors (water, uncarved block).
+     - Peter Drucker: "Systematic abandonment" and "contribution." Structured and results-oriented.
+     - Brené Brown: Grounded, authentic. "The arena," vulnerability, shame-resilience.
+     - Dale Carnegie: Enthusiastic, people-centric, persuasive. "Winning cooperation."
+     - Jim Rohn: Direct, aphoristic, motivational "philosophy of success."
+     - Benjamin Franklin: Practical, industrious, civic-minded. "Way to wealth" through character.
+
+     SYNTHESIZED OUTPUT (wisePath.content - 150 words max):
+     - Blend their wisdom into ONE cohesive voice - "The Ultimate Mentor"
+     - DO NOT say "Buffett says this" or "Brown says that"
+     - MUST address all three lenses:
+       * Relationships/Wellness
+       * Ethics/Alignment
+       * Success/Action
+     - The statement must carry the weight and specific vocabulary of the selected masters
+     - Not generic - authentic and deeply wise
+
 4. keyPoints: speaker name, their point, and emphasis.
 5. nextSteps: clear roadmap actions.
 6. participantIntention: the deep why behind the talk.

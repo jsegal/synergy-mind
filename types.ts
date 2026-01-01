@@ -24,7 +24,6 @@ export interface AnalysisResult {
     hiddenOpportunity: string;
     wisePath: {
       content: string;
-      sageName: string;
     };
   };
 }
