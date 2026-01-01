@@ -49,7 +49,6 @@ export class BrainstormSession {
   private stream: MediaStream | null = null;
   private workletNode: AudioWorkletNode | null = null;
   private isClosing = false;
-  private silenceDetectionTimeout: number | null = null;
 
   constructor(callbacks: any) {
     this.callbacks = callbacks;
@@ -199,25 +198,12 @@ Engage in a thoughtful voice conversation to help them explore this idea deeply.
 
           this.ws.send(JSON.stringify(audioMessage));
         }
-      } else if (event.data.type === 'silence_detected') {
-        console.log("Silence detected - sending turn complete");
-        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-          this.ws.send(JSON.stringify({
-            clientContent: {
-              turnComplete: true
-            }
-          }));
-        }
       }
     };
   }
 
   async disconnect() {
     this.isClosing = true;
-
-    if (this.silenceDetectionTimeout) {
-      clearTimeout(this.silenceDetectionTimeout);
-    }
 
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.ws.close();
