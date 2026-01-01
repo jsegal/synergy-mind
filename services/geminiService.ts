@@ -186,8 +186,11 @@ Engage in a thoughtful voice conversation to help them explore this idea deeply.
       this.callbacks.onError(new Error("Connection error occurred"));
     };
 
-    this.ws.onclose = () => {
+    this.ws.onclose = (event) => {
       console.log("WebSocket closed");
+      console.log("Close Code:", event.code);
+      console.log("Close Reason:", event.reason);
+      console.log("Was Clean:", event.wasClean);
       this.callbacks.onStatusChange(false);
       if (this.workletNode) {
         this.workletNode.disconnect();
