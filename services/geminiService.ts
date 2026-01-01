@@ -123,17 +123,17 @@ export class BrainstormSession {
       const setupMessage = {
         setup: {
           model: "models/gemini-2.5-flash-native-audio-preview-12-2025",
-          generationConfig: {
-            responseModalities: ["AUDIO"],
-            speechConfig: {
-              voiceConfig: {
-                prebuiltVoiceConfig: {
-                  voiceName: voiceName
+          generation_config: {
+            response_modalities: ["AUDIO"],
+            speech_config: {
+              voice_config: {
+                prebuilt_voice_config: {
+                  voice_name: voiceName
                 }
               }
             }
           },
-          systemInstruction: {
+          system_instruction: {
             parts: [{
               text: `You are SynergyMind, an elite strategic consultant. The user has shared this breakthrough insight: "${analysisContext.insights.bigPicture}".
 
