@@ -43,8 +43,9 @@ Deno.serve(async (req: Request) => {
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
+    genAI.apiVersion = "v1beta";
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash-exp",
+      model: "gemini-2.5-flash",
       generationConfig: {
         responseMimeType: "application/json",
         responseSchema: {

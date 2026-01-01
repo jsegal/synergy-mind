@@ -31,7 +31,8 @@ Deno.serve(async (req: Request) => {
     const { messages, context }: ChatRequest = await req.json();
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+    genAI.apiVersion = "v1beta";
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     // Build conversation history
     let conversationHistory = [];
